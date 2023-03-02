@@ -1,17 +1,42 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
 
 function App() {
+  const [data, setData] = useState("N/A");
 
-  const [data, setData] = useState("");
+  async function login() {
+    const res = await fetch("/login", {
+      method: "POST",
+      body: JSON.stringify({
+        stuff: "stuff",
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-  useEffect(() => {
-    fetch("/home").then(res => res.json()).then(data => {
-      setData(data)
-      console.log(data)
-    })
-  }, [])
+    const data = await res.json();
 
-  return <div>{data.stuff}!</div>;
+    setData(data.message);
+  }
+
+  // useEffect(() => {
+  //   fetch("/home")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setData(data);
+  //       console.log(data);
+  //     });
+  // }, []);
+
+  return (
+    <Container style={{"text-align": "center"}}>
+      <div>Success Message: {data}</div>
+      <Button onClick={login}>Click Me to Login</Button>
+    </Container>
+  );
 }
 
 export default App;
