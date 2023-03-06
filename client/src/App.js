@@ -1,41 +1,14 @@
-import React, { useState } from "react";
+import {Route, Routes, Navigate} from "react-router-dom";
 
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
+import Homepage from "./components/pages/Homepage";
 
 function App() {
-  const [data, setData] = useState("N/A");
-
-  async function login() {
-    const res = await fetch("/login", {
-      method: "POST",
-      body: JSON.stringify({
-        stuff: "stuff",
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const data = await res.json();
-
-    setData(data.message);
-  }
-
-  // useEffect(() => {
-  //   fetch("/home")
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setData(data);
-  //       console.log(data);
-  //     });
-  // }, []);
 
   return (
-    <Container style={{"text-align": "center"}}>
-      <div>Success Message: {data}</div>
-      <Button onClick={login}>Click Me to Login</Button>
-    </Container>
+    <Routes>
+      <Route path="/" element={<Homepage/>}/>
+      <Route path="/test" element={<div>Test Page!</div>}/>
+    </Routes>
   );
 }
 
