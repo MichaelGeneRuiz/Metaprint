@@ -1,8 +1,10 @@
-from flask import Flask
-from flask import request
+from flask import Flask, request, render_template
 
 app = Flask(__name__)
 
+@app.route("/")
+def landing():
+    return render_template("index.html")
 
 @app.route("/home")
 def home():
