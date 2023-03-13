@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 
 function Homepage() {
-  const [data, setData] = useState("N/A");
+  const [loginData, setLoginData] = useState("N/A");
+  const [connectionData, setConnectionData] = useState(
+    "Not Connected to Backend"
+  );
   const navigate = useNavigate();
 
   async function login() {
@@ -21,7 +24,18 @@ function Homepage() {
 
     const data = await res.json();
 
-    setData(data.message);
+    setLoginData(data.message);
+  }
+
+  async function getHome() {
+    const res = await fetch("/home");
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.log("uh oh");
+    }
+
+    setConnectionData(data.connection_status);
   }
 
   function testButtonHandler(e) {
@@ -30,11 +44,17 @@ function Homepage() {
     navigate("/test");
   }
 
+  useEffect(() => {
+    getHome();
+  }, []);
+
   return (
     <Container style={{ "text-align": "center" }}>
-      <div>Success Message: {data}</div>
+      <div>Database Connection Test: {connectionData}</div>
+      <hr />
+      <div>Success Message: {loginData}</div>
       <Button onClick={login}>Click Me to Login</Button>
-      <hr/>
+      <hr />
       <Button onClick={testButtonHandler}>View Test Page</Button>
     </Container>
   );
