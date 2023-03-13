@@ -7,12 +7,15 @@ from db_credentials import *
 app = Flask(__name__)
 
 def get_psql_conn():
-    conn = psycopg2.connect(dbname=DB_NAME,
-                            user=DB_USER,
-                            password=DB_PASSWORD,
-                            host=DB_HOST,
-                            port=DB_PORT)
-    print("Connected to PostgreSQL server")
+    try:
+        conn = psycopg2.connect(dbname=DB_NAME,
+                                user=DB_USER,
+                                password=DB_PASSWORD,
+                                host=DB_HOST,
+                                port=DB_PORT)
+        print("Connected to PostgreSQL server")
+    except psycopg2.OperationalError:
+        pass
     return conn
 
 @app.route("/")
@@ -21,8 +24,12 @@ def landing():
 
 @app.route("/home")
 def home():
-    get_psql_conn()
-    return {"stuff": "hello"}
+    conn = get_psql_conn()
+    if conn.closed == 0:
+        status = "open"
+    else:
+        status = "closed"
+    return {"connection_status": status}
 
 
 @app.route("/login", methods=["POST"])
