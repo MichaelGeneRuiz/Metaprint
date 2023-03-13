@@ -1,6 +1,19 @@
+import logging
+
 from flask import Flask, request, render_template
+import psycopg2
+from db_credentials import *
 
 app = Flask(__name__)
+
+def get_psql_conn():
+    conn = psycopg2.connect(dbname=DB_NAME,
+                            user=DB_USER,
+                            password=DB_PASSWORD,
+                            host=DB_HOST,
+                            port=DB_PORT)
+    print("Connected to PostgreSQL server")
+    return conn
 
 @app.route("/")
 def landing():
@@ -8,6 +21,7 @@ def landing():
 
 @app.route("/home")
 def home():
+    get_psql_conn()
     return {"stuff": "hello"}
 
 
