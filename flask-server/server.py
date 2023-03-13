@@ -20,7 +20,9 @@ def get_psql_conn():
 
 @app.route("/")
 def landing():
-    return render_template("index.html")
+    # Don't put any pages here, we don't want the backend to generate
+    # anything other than json responses for the frontend.
+    return "Sample Landing Page"
 
 @app.route("/home")
 def home():
