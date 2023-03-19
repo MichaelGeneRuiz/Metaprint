@@ -3,7 +3,6 @@ import logging
 from flask import Flask, request, jsonify
 
 # Added this for auth stuff
-import flask_login
 import jwt
 
 import psycopg2
