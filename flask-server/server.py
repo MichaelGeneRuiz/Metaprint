@@ -1,28 +1,37 @@
 import logging
 
-from flask import Flask, request, render_template
+from flask import Flask, request, jsonify
+
+# Added this for auth stuff
+import flask_login
 import psycopg2
+
 from db_credentials import *
 
 app = Flask(__name__)
 
+
 def get_psql_conn():
     try:
-        conn = psycopg2.connect(dbname=DB_NAME,
-                                user=DB_USER,
-                                password=DB_PASSWORD,
-                                host=DB_HOST,
-                                port=DB_PORT)
+        conn = psycopg2.connect(
+            dbname=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            host=DB_HOST,
+            port=DB_PORT,
+        )
         print("Connected to PostgreSQL server")
     except psycopg2.OperationalError:
         pass
     return conn
+
 
 @app.route("/")
 def landing():
     # Don't put any pages here, we don't want the backend to generate
     # anything other than json responses for the frontend.
     return "Sample Landing Page"
+
 
 @app.route("/home")
 def home():
@@ -34,11 +43,32 @@ def home():
     return {"connection_status": status}
 
 
-@app.route("/login", methods=["POST"])
+@app.route("/auth/signup", methods=["POST"])
+def signup():
+    data = request.get_json()
+    email = data.get("email")
+    password = data.get("password")
+
+    print(email, password)
+
+    # Do flask-login stuff!
+
+    # Http code 201 is a successful account creation
+    return jsonify({"message": "Signup request received."}), 201
+
+
+@app.route("/auth/login", methods=["POST"])
 def login():
-    data = request.json
-    print(data["stuff"])
-    return {"message": "this is the login response"}
+    data = request.get_json()
+    email = data.get("email")
+    password = data.get("password")
+
+    print(email, password)
+
+    # Do flask-login stuff!
+
+    # Http code 200 is a success
+    return jsonify({"message": "Login request received."}), 200
 
 
 @app.route("/inputActivity", methods=["POST"])
