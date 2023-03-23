@@ -83,8 +83,8 @@ def login():
     if (data):
         # create session for user
         d1 = datetime.datetime.now() + datetime.timedelta(minutes=15)
-        encoded_user_id = jwt.encode({"user_id": data["uuid"]}, "secret", algorithm="HS256")
-        return jsonify({"message": "Login request success", "user_token": encoded_user_id, "expiration": d1}), 200
+        encoded_user = jwt.encode({"user_id": data["uuid"], "expiration": d1}, "secret", algorithm="HS256")
+        return jsonify({"message": "Login request success", "user_token": encoded_user}), 200
 
     # Http code 401 is auth fail
     return jsonify({"message": "Login request failed"}), 401
