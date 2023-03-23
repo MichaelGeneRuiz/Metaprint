@@ -3,11 +3,8 @@ import logging
 
 from flask import Flask, request, jsonify
 
-# Added this for auth stuff
-import jwt
-import uuid
-
-import psycopg2
+# auth, database connection
+import jwt, psycopg2, account_utils
 
 from db_credentials import *
 
@@ -46,17 +43,23 @@ def home():
 
 @app.route("/auth/signup", methods=["POST"])
 def signup():
-    data = request.get_json()
-    f_name = data.get("first_name")
-    l_name = data.get("l_name")
-    email = data.get("email")
-    password = data.get("password")
-    user_id = uuid.uuid1()
+    packet = request.get_json()
+
+    f_name = packet.get("first_name")
+    l_name = packet.get("l_name")
+    email = packet.get("email")
+    password = packet.get("password")
+
+    # ensure no empty fields
+    try:
+        user_id, e_pass = account_utils.validate_credentials(f_name, l_name, email, password)
+    except ValueError as error:
+        return jsonify({"message": repr(error)}), 400
 
     # check if duplicate exists
     cursor = conn.cursor()
     query = "SELECT email FROM users WHERE email = %s"
-    cursor.execute(query, email)
+    cursor.execute(query, packet.get("email"))
     data = cursor.fetchone()
 
     if (data):
@@ -64,10 +67,12 @@ def signup():
         return jsonify({"message": "Existing account with email", "email" : data["email"]}), 409
 
     query = "INSERT INTO users VALUES (%s, %s, %s, %s, %s)"
-    cursor.execute(query, (user_id, f_name, l_name, email, password))
+    cursor.execute(query, (user_id, f_name, l_name, email, e_pass))
+    cursor.commit()
+    cursor.close()
 
     # Http code 201 is a successful account creation
-    return jsonify({"message": "Signup request received."}), 201
+    return jsonify({"message": "Signup request success."}), 201
 
 
 @app.route("/auth/login", methods=["POST"])
@@ -76,13 +81,20 @@ def login():
     email = data.get("email")
     password = data.get("password")
 
+    if (len(email) == 0):
+        return jsonify({"message": "Email is empty"}), 400
+    elif (len(password) == 0):
+        return jsonify({"message": "Password is empty"}), 400
+
+    e_password = account_utils.md5_encrypt(password)
+
     cursor = conn.cursor()
     query = "SELECT userid FROM users WHERE email = %s and password = %s"
-    cursor.execute(query, (email, password))
+    cursor.execute(query, (email, e_password))
     data = cursor.fetchone()
     if (data):
         # create session for user
-        d1 = datetime.datetime.now() + datetime.timedelta(minutes=15)
+        d1 = datetime.datetime.now() + datetime.timedelta(hours=1)
         encoded_user = jwt.encode({"user_id": data["uuid"], "expiration": d1}, "secret", algorithm="HS256")
         return jsonify({"message": "Login request success", "user_token": encoded_user}), 200
 
