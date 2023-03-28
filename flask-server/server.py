@@ -197,7 +197,7 @@ def inputActivity(user_id):
     except ValueError as err:
         return jsonify({'message': repr(err)}), 400
 
-    database_utils.inputActivity(conn.cursor(), activity_id, user_id,
+    database_utils.inputActivity(conn, activity_id, user_id,
                                  activity_type, company, amount, emissions,
                                  timestamp)
 

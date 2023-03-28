@@ -3,9 +3,7 @@ import uuid
 # accepts data, validates it, then returns a uuid for activity_id
 def validateActivity(user_id, activity_type, company, amount, emissions, timestamp):
 
-    if len(user_id) != 36:
-        raise ValueError("Invalid user token")
-    elif len(activity_type) == 0:
+    if len(activity_type) == 0:
         raise ValueError("Activity type cannot be nothing")
     # company is allowed to be nothing
     elif amount <= 0:
@@ -19,10 +17,11 @@ def validateActivity(user_id, activity_type, company, amount, emissions, timesta
 
     return activity_id
 
-def inputActivity(cursor, activity_id, user_id, activity_type, company, amount,
+def inputActivity(connection, activity_id, user_id, activity_type, company, amount,
                   emissions, timestamp):
+    cursor = connection.cursor()
     query = 'INSERT INTO activities VALUES (%s, %s, %s, %s, %s, %s, %s)'
     cursor.execute(query, (activity_id, user_id, activity_type,
                            company, amount, emissions, timestamp))
-    cursor.commit()
+    connection.commit()
     cursor.close()
