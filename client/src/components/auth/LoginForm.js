@@ -68,37 +68,30 @@ function LoginForm() {
   async function submitHandler(event) {
     event.preventDefault();
 
-    const enteredEmail = email;
-    const enteredPassword = password;
-    const enteredFirstName = firstName;
-    const enteredLastName = lastName;
-
     if (isLogin) {
       try {
-        const data = await login(enteredEmail, enteredPassword);
+        const data = await login(email, password);
         authCtx.login(data.user_token);
         setErrorMessage("");
-        setTimeout(() => {
-          navigate("/", { replace: true });
-        }, 2000);
+        navigate("/", { replace: true });
       } catch (error) {
-        setErrorMessage(error.message)
+        setErrorMessage(error.message);
         setRegistrationNotice("");
       }
     } else {
       try {
         const registerData = await createAccount(
-          enteredEmail,
-          enteredPassword,
-          enteredFirstName,
-          enteredLastName
+          email,
+          password,
+          firstName,
+          lastName
         );
 
         setRegistrationNotice(registerData.message);
         setErrorMessage("");
         setIsLogin(true);
       } catch (error) {
-        setErrorMessage(error.message)
+        setErrorMessage(error.message);
         setRegistrationNotice("");
       }
     }
