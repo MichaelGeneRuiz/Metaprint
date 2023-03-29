@@ -6,8 +6,10 @@ export function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
   const [token, setToken] = useState();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
       const decodedToken = JSON.parse(atob(storedToken.split(".")[1]));
@@ -21,6 +23,7 @@ export function AuthProvider({ children }) {
         setEmail(decodedToken.email);
       }
     }
+    setLoading(false);
   }, []);
 
   function login(newToken) {
@@ -39,7 +42,9 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, token, email, login, logout }}>
+    <AuthContext.Provider
+      value={{ isLoggedIn, token, email, loading, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
