@@ -8,7 +8,6 @@ import AuthContext from "../../context/AuthContext";
 
 function Homepage() {
   const [numUsers, setNumUsers] = useState("Not Connected to Backend");
-  const [protectedData, setProtectedData] = useState("");
   const navigate = useNavigate();
 
   const authCtx = useContext(AuthContext);
@@ -24,33 +23,20 @@ function Homepage() {
     setNumUsers(`${data.users} users in the database.`);
   }, []);
 
-  function testButtonHandler(e) {
+  function navigateLogin(e) {
     e.preventDefault();
 
     navigate("/login");
   }
 
-  async function protectedClickHandler() {
-    const res = await fetch("/protected", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authCtx.token}`,
-      },
-    });
+  function navigateProfile(e) {
+    e.preventDefault();
 
-    const data = await res.json();
-
-    if (res.ok) {
-      setProtectedData(data.message);
-    } else {
-      setProtectedData("You are not authorized to view this data.");
-    }
+    navigate("/profile");
   }
 
   useEffect(() => {
     getHome();
-    setProtectedData("");
   }, [getHome]);
 
   return (
@@ -58,7 +44,7 @@ function Homepage() {
       <div>{numUsers}</div>
       <hr />
       {!authCtx.isLoggedIn && (
-        <Button onClick={testButtonHandler}>View Login Page</Button>
+        <Button onClick={navigateLogin}>View Login Page</Button>
       )}
       {authCtx.isLoggedIn && (
         <div>
@@ -73,11 +59,12 @@ function Homepage() {
           </Button>
         </div>
       )}
-      <hr />
-      <div>
-        <Button onClick={protectedClickHandler}>Get Protected Data</Button>
-        <p>{protectedData}</p>
-      </div>
+      {authCtx.isLoggedIn && (
+        <div>
+          <p>Go to your profile:</p>
+          <Button onClick={navigateProfile}>Profile</Button>
+        </div>
+      )}
     </Container>
   );
 }
