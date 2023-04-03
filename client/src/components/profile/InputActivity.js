@@ -55,7 +55,7 @@ function InputActivity() {
     setActivityType("");
     setCompany("");
     setAmount(1);
-    setEmissions("");
+    setEmissions(0);
   }
 
   return (

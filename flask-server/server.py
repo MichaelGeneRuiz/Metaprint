@@ -180,8 +180,8 @@ def inputActivity(user_id):
     packet = request.get_json()
     activity_type = packet.get("activity_type")
     company = packet.get("company")
-    amount = int(packet.get("amount"))
-    emissions = int(packet.get("emissions"))
+    amount = float(packet.get("amount"))
+    emissions = float(packet.get("emissions"))
     timestamp = packet.get("timestamp")
 
     try:
