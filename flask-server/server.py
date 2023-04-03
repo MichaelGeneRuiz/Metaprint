@@ -210,13 +210,20 @@ def viewTips():
 
 
 @app.route("/viewPersonalFootprint", methods=["GET"])
-def viewPersonalFootprint():
-    return {"message": "personal footprint"}
+@token_required
+def viewPersonalFootprint(user_id):
+    all_data, grouped_data = database_utils.getUserActivities(conn, user_id)
+    return {"message": "personal footprint",
+            "activities": all_data,
+            "grouped_activities": grouped_data}, 200
 
 
 @app.route("/viewAggregateFootprint", methods=["GET"])
 def viewAggregateFootprint():
-    return {"message": "aggregate footprint"}
+    all_data, grouped_data = database_utils.getAllActivities(conn)
+    return {"message": "aggregate footprint",
+            "activities": all_data,
+            "grouped_activities": grouped_data}, 200
 
 
 if __name__ == "__main__":
