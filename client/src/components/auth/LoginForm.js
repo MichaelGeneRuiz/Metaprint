@@ -63,6 +63,7 @@ function LoginForm() {
 
   function switchAuthModeHandler() {
     setIsLogin((prevState) => !prevState);
+    setErrorMessage("");
   }
 
   async function submitHandler(event) {
