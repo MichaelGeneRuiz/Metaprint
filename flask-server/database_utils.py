@@ -25,3 +25,57 @@ def inputActivity(connection, activity_id, user_id, activity_type, company, amou
                            company, amount, emissions, timestamp))
     connection.commit()
     cursor.close()
+
+def getUserActivities(connection, user_id):
+    cursor = connection.cursor()
+    query = 'SELECT * FROM activities WHERE user_id=(%s)'
+    cursor.execute(query, user_id)
+    data = cursor.fetchall()
+
+    formatted_data = formatActivities(data)
+    grouped_data = groupActivities(data)
+
+    return formatted_data, grouped_data
+
+def getAllActivities(connection):
+    cursor = connection.cursor()
+    query = 'SELECT * FROM activities '
+    cursor.execute(query)
+    data = cursor.fetchall()
+
+    formatted_data = formatActivities(data)
+    grouped_data = groupActivities(data)
+
+    return formatted_data, grouped_data
+
+# formats activities into a list of dicts
+def formatActivities(data):
+    res = []
+    for elem in data:
+        res.append({"activity_id": elem[0],
+                    "user_id": elem[1],
+                    "type": elem[2],
+                    "company": elem[3],
+                    "amount": elem[4],
+                    "emissions": elem[5],
+                    "date": elem[6]})
+    return res
+
+def groupActivities(data):
+    res = {}
+    for elem in data:
+        if elem[2] in res:
+            res[elem[2]].append({"activity_id": elem[0],
+                                "user_id": elem[1],
+                                "company": elem[3],
+                                "amount": elem[4],
+                                "emissions": elem[5],
+                                "date": elem[6]})
+        else:
+            res[elem[2]] = [{"activity_id": elem[0],
+                            "user_id": elem[1],
+                            "company": elem[3],
+                            "amount": elem[4],
+                            "emissions": elem[5],
+                            "date": elem[6]}]
+    return res
