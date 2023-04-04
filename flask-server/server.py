@@ -180,7 +180,7 @@ def inputActivity(user_id):
     packet = request.get_json()
     activity_type = packet.get("activity_type")
     company = packet.get("company")
-    amount = float(packet.get("amount"))
+    amount = int(packet.get("amount"))
     emissions = float(packet.get("emissions"))
     timestamp = packet.get("timestamp")
 
@@ -213,17 +213,21 @@ def viewTips():
 @token_required
 def viewPersonalFootprint(user_id):
     all_data, grouped_data = database_utils.getUserActivities(conn, user_id)
-    return {"message": "personal footprint",
-            "activities": all_data,
-            "grouped_activities": grouped_data}, 200
+    return {
+        "message": "personal footprint",
+        "activities": all_data,
+        "grouped_activities": grouped_data,
+    }, 200
 
 
 @app.route("/viewAggregateFootprint", methods=["GET"])
 def viewAggregateFootprint():
     all_data, grouped_data = database_utils.getAllActivities(conn)
-    return {"message": "aggregate footprint",
-            "activities": all_data,
-            "grouped_activities": grouped_data}, 200
+    return {
+        "message": "aggregate footprint",
+        "activities": all_data,
+        "grouped_activities": grouped_data,
+    }, 200
 
 
 if __name__ == "__main__":
