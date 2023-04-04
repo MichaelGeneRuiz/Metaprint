@@ -14,7 +14,7 @@ function InputActivity() {
   const [company, setCompany] = useState("");
   const [amount, setAmount] = useState(1);
   const [emissions, setEmissions] = useState(0);
-  const [timestamp, setTimestamp] = useState();
+  const [timestamp, setTimestamp] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -47,6 +47,9 @@ function InputActivity() {
 
       setErrorMessage("");
       setSuccessMessage(data.message);
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 10000);
     } catch (error) {
       setSuccessMessage("");
       setErrorMessage(error.message);
@@ -56,19 +59,29 @@ function InputActivity() {
     setCompany("");
     setAmount(1);
     setEmissions(0);
+    setTimestamp("");
   }
 
   return (
     <Container>
       <Form onSubmit={submitHandler} className={classes.form}>
+        <h1 className={classes.header}>Input Activity</h1>
         {!!errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
         {!!successMessage && <Alert variant="success">{successMessage}</Alert>}
-        <h1 className={classes.header}>Input Activity</h1>
+        <Form.Group className="mb-3" controlId="formBasicTimestamp">
+          <Form.Label>Date</Form.Label>
+          <Form.Control
+            type="date"
+            required
+            onChange={(e) => setTimestamp(e.target.value)}
+            value={timestamp}
+          />
+        </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicActivityType">
           <Form.Label>Activity Type</Form.Label>
           <Form.Control
             type="text"
-            placeholder="This will probably be a dropdown later."
+            placeholder="Activity Type"
             required
             onChange={(e) => setActivityType(e.target.value)}
             value={activityType}
@@ -83,6 +96,18 @@ function InputActivity() {
             value={company}
           />
         </Form.Group>
+        <Form.Group className="mb-3" controlId="formBasicEmissions">
+          <Form.Label>Emissions</Form.Label>
+          <Form.Control
+            className={classes.no_arrows}
+            type="number"
+            min="0"
+            step="0.01"
+            required
+            onChange={(e) => setEmissions(e.target.value)}
+            value={emissions}
+          />
+        </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicAmount">
           <Form.Label>Amount</Form.Label>
           <Form.Control
@@ -92,24 +117,6 @@ function InputActivity() {
             required
             onChange={(e) => setAmount(e.target.value)}
             value={amount}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicEmissions">
-          <Form.Label>Emissions</Form.Label>
-          <Form.Control
-            type="number"
-            min="0"
-            required
-            onChange={(e) => setEmissions(e.target.value)}
-            value={emissions}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicTimestamp">
-          <Form.Label>Date</Form.Label>
-          <Form.Control
-            type="date"
-            required
-            onChange={(e) => setTimestamp(e.target.value)}
           />
         </Form.Group>
         <Button type="submit">Submit</Button>
