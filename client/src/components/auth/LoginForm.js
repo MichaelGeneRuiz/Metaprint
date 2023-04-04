@@ -152,9 +152,11 @@ function LoginForm() {
             onChange={(e) => setPassword(e.target.value)}
             value={password}
           />
-          <Form.Text muted>
-            Your password must be at least 8 characters long.
-          </Form.Text>
+          {!isLogin && (
+            <Form.Text muted>
+              Your password must be at least 8 characters long.
+            </Form.Text>
+          )}
         </Form.Group>
         <Stack direction="horizontal">
           <Button type="submit">Submit</Button>
