@@ -1,8 +1,19 @@
 .form {
   margin: auto;
-  max-width: 600px;
+  max-width: 500px;
 }
 
 .header {
   text-align: center;
+}
+
+/* Chrome, Safari, Edge, Opera */
+.no_arrows::-webkit-outer-spin-button,
+.no_arrows::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.no_arrows {
+  -moz-appearance: textfield;
 }
