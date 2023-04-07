@@ -83,6 +83,27 @@ def getTotalEmissions(connection, user_id=False):
 
     return data[0]
 
+def getSupportedActivities(connection):
+    query = "SELECT name FROM approved_activities"
+    cursor = connection.cursor()
+    cursor.execute(query)
+    data = cursor.fetchall()
+    res = []
+    for elem in data:
+        # 0 is the index for name
+        res.append(elem[0])
+    return res
+
+def getSupportedCompanies(connection):
+    query = "SELECT name FROM approved_companies"
+    cursor = connection.cursor()
+    cursor.execute(query)
+    data = cursor.fetchall()
+    res = []
+    for elem in data:
+        # 0 is the index for name
+        res.append(elem[0])
+    return res
 
 # formats activities into a list of dicts
 def formatActivities(data):

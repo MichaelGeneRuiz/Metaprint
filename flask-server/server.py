@@ -197,7 +197,6 @@ def inputActivity(user_id):
 
     return jsonify({"message": "Activity submitted! You may continue."}), 201
 
-
 @app.route("/inputCompany", methods=["POST"])
 def inputCompany():
     # Do something with post data
@@ -207,6 +206,15 @@ def inputCompany():
 @app.route("/viewTips", methods=["GET"])
 def viewTips():
     return {"message": "tips"}
+
+@app.route("/getActivityFields", methods=["GET"])
+def getActivityFields():
+    supportedActivities = database_utils.getSupportedActivities(conn)
+    supportedCompanies = database_utils.getSupportedCompanies(conn)
+
+    return jsonify({"message": "success"},
+                   {"activities": supportedActivities},
+                   {"companies": supportedCompanies}), 200
 
 
 @app.route("/viewPersonalFootprint", methods=["GET"])
