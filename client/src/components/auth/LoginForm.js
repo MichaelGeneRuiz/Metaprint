@@ -74,7 +74,7 @@ function LoginForm() {
         const data = await login(email, password);
         authCtx.login(data.user_token);
         setErrorMessage("");
-        navigate("/", { replace: true });
+        navigate("/profile", { replace: true });
       } catch (error) {
         setErrorMessage(error.message);
         setRegistrationNotice("");
