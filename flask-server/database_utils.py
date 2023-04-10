@@ -69,10 +69,11 @@ def getAllActivities(connection):
 def getTotalEmissions(connection, user_id=False):
     cursor = connection.cursor()
     if (user_id):
+        converted_user_id = uuid.UUID(user_id)
         query = "SELECT SUM(emissions) AS total \
                 FROM activities \
                 WHERE userid = %s"
-        cursor.execute(query, user_id)
+        cursor.execute(query, (converted_user_id,))
     else:
         query = "SELECT SUM(emissions) AS total \
                 FROM activities"

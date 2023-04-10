@@ -4,16 +4,14 @@ import Container from "react-bootstrap/Container";
 
 import AuthContext from "../../context/AuthContext";
 
-import InputActivity from "../profile/InputActivity";
-import ViewActivities from "../profile/ViewActivities";
-
-function ProfilePage() {
+function AggregatePage() {
   const authCtx = useContext(AuthContext);
-  const [activities, setActivities] = useState([]);
+  const [totalEmissions, setTotalEmissions] = useState(0);
+  const [userEmissions, setUserEmissions] = useState(0);
 
-  const getActivities = useCallback(async () => {
+  const getEmissions = useCallback(async () => {
     try {
-      const res = await fetch("/viewPersonalFootprint", {
+      const res = await fetch("/viewAggregateFootprint", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -27,28 +25,25 @@ function ProfilePage() {
         throw new Error(data.message);
       }
 
-      setActivities(data.activities);
+      setTotalEmissions(data.total_emissions);
+      setUserEmissions(data.total_user_emissions);
     } catch (error) {
       console.log(error.message);
     }
   }, [authCtx.token]);
 
   useEffect(() => {
-    getActivities();
-  }, [getActivities]);
+    getEmissions();
+  }, [getEmissions]);
 
   return (
     <Container>
       <div style={{ textAlign: "center" }}>
-        <div style={{ fontSize: 24 }}>
-          You are currently logged in as: {authCtx.email}
-        </div>
+        <p>Your Emissions: {userEmissions}</p>
+        <p>Total Emissions: {totalEmissions}</p>
       </div>
-      <hr />
-      <ViewActivities activities={activities} refresh={getActivities} />
-      <InputActivity />
     </Container>
   );
 }
 
-export default ProfilePage;
+export default AggregatePage;
