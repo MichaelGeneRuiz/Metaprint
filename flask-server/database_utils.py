@@ -29,6 +29,7 @@ def inputActivity(
     timestamp,
 ):
     cursor = connection.cursor()
+    print("submitting data with format specifiers")
     query = "INSERT INTO activities VALUES (%s, %s, %s, %s, %s, %s, %s)"
     cursor.execute(
         query,
@@ -45,6 +46,7 @@ def getUserActivities(connection, user_id):
     query = "SELECT * FROM activities WHERE userid = %s"
     cursor.execute(query, (converted_user_id,))
     data = cursor.fetchall()
+    cursor.close()
 
     formatted_data = formatActivities(data)
     grouped_data = groupActivities(data)
@@ -57,12 +59,51 @@ def getAllActivities(connection):
     query = "SELECT * FROM activities "
     cursor.execute(query)
     data = cursor.fetchall()
+    cursor.close()
 
     formatted_data = formatActivities(data)
     grouped_data = groupActivities(data)
 
     return formatted_data, grouped_data
 
+def getTotalEmissions(connection, user_id=False):
+    cursor = connection.cursor()
+    if (user_id):
+        query = "SELECT SUM(emissions) AS total \
+                FROM activities \
+                WHERE userid = %s"
+        cursor.execute(query, user_id)
+    else:
+        query = "SELECT SUM(emissions) AS total \
+                FROM activities"
+        cursor.execute(query)
+
+    data = cursor.fetchone()
+    cursor.close()
+
+    return data[0]
+
+def getSupportedActivities(connection):
+    query = "SELECT name FROM approved_activities"
+    cursor = connection.cursor()
+    cursor.execute(query)
+    data = cursor.fetchall()
+    res = []
+    for elem in data:
+        # 0 is the index for name
+        res.append(elem[0])
+    return res
+
+def getSupportedCompanies(connection):
+    query = "SELECT name FROM approved_companies"
+    cursor = connection.cursor()
+    cursor.execute(query)
+    data = cursor.fetchall()
+    res = []
+    for elem in data:
+        # 0 is the index for name
+        res.append(elem[0])
+    return res
 
 # formats activities into a list of dicts
 def formatActivities(data):
