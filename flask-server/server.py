@@ -237,14 +237,14 @@ def viewHistoricalAggregateFootprint():
     if (preset):
         preset_type = packet.get("preset_type")
 
-        res = database_utils.getAggregateActivitiesHistorical(conn, preset_type)
+        res = database_utils.getAggregateEmissionsHistorical(conn, preset_type)
         kind = preset_type
 
     else:
         date_start = packet.get("date_start")
         date_end = packet.get("date_end")
 
-        res = database_utils.getAggregateActivitiesRange(conn,
+        res = database_utils.getAggregateEmissionsRange(conn,
                                                     date_start,
                                                     date_end)
         kind = date_start + "-" + date_end
