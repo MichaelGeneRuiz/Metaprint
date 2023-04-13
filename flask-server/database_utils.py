@@ -73,7 +73,7 @@ def getUserActivitiesHistorical(connection, user_id, preset_type):
 
     return formatActivities(data)
 
-def getAggregateActivitiesHistorical(connection, preset_type):
+def getAggregateEmissionsHistorical(connection, preset_type):
     if (preset_type == "day"):
         query = "SELECT * FROM activities WHERE" \
                 "timestamp >= now() - interval '1 day'"
@@ -87,7 +87,14 @@ def getAggregateActivitiesHistorical(connection, preset_type):
     data = cursor.fetchall()
     cursor.close()
 
-    return formatActivities(data)
+    res = {}
+    for elem in data:
+        if elem[6] in res:
+            res[elem[6]] += int(elem[5])
+        else:
+            res[elem[6]] = int(elem[5])
+
+    return res
 
 def getUserActivitiesRange(connection, user_id, date_start, date_end):
     converted_user_id = uuid.UUID(user_id)
@@ -103,7 +110,7 @@ def getUserActivitiesRange(connection, user_id, date_start, date_end):
 
     return formatActivities(data)
 
-def getAggregateActivitiesRange(connection, date_start, date_end):
+def getAggregateEmissionsRange(connection, date_start, date_end):
     query = "SELECT * FROM activities WHERE" \
             "timestamp >= %s AND" \
             "timestamp <= %s"
@@ -113,7 +120,11 @@ def getAggregateActivitiesRange(connection, date_start, date_end):
     data = cursor.fetchall()
     cursor.close()
 
-    return formatActivities(data)
+    res = 0
+    for elem in data:
+        res += int(elem[6])
+
+    return res
 
 
 def getAllActivities(connection):
