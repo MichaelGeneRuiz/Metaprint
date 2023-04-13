@@ -1,0 +1,17 @@
+.container {
+  text-align: center;
+}
+
+.header {
+  
+}
+
+.welcome {
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.subwelcome {
+  font-size: 24px;
+  font-weight: bold;
+}

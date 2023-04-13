@@ -197,15 +197,6 @@ def inputActivity(user_id):
 
     return jsonify({"message": "Activity submitted! You may continue."}), 201
 
-@app.route("/inputCompany", methods=["POST"])
-def inputCompany():
-    # Do something with post data
-    return {"message": "input company success"}
-
-
-@app.route("/viewTips", methods=["GET"])
-def viewTips():
-    return {"message": "tips"}
 
 @app.route("/getActivityFields", methods=["GET"])
 def getActivityFields():
@@ -230,7 +221,8 @@ def viewPersonalFootprint(user_id):
     }, 200
 
 @app.route("/viewHistoricalAggregateFootprint", methods=["POST"])
-def viewHistoricalAggregateFootprint():
+@token_required
+def viewHistoricalAggregateFootprint(user_id):
     packet = request.get_json()
     preset = packet.get("preset")
 
@@ -274,3 +266,14 @@ def viewAggregateFootprint(user_id):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+@app.route("/inputCompany", methods=["POST"])
+def inputCompany():
+    # Do something with post data
+    return {"message": "input company success"}
+
+
+@app.route("/viewTips", methods=["GET"])
+def viewTips():
+    return {"message": "tips"}
