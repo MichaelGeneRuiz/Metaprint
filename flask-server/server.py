@@ -229,30 +229,28 @@ def viewPersonalFootprint(user_id):
         "total_user_emissions": total_user
     }, 200
 
-@app.route("/viewHistoricalPersonalFootprint", methods=["POST"])
-@token_required
-def viewHistoricalPersonalFootprint(user_id):
+@app.route("/viewHistoricalAggregateFootprint", methods=["POST"])
+def viewHistoricalAggregateFootprint():
     packet = request.get_json()
     preset = packet.get("preset")
 
     if (preset):
         preset_type = packet.get("preset_type")
 
-        res = database_utils.getUserActivitiesHistorical(conn, user_id, preset_type)
+        res = database_utils.getAggregateActivitiesHistorical(conn, preset_type)
         kind = preset_type
 
     else:
         date_start = packet.get("date_start")
         date_end = packet.get("date_end")
 
-        res = database_utils.getUserActivitiesRange(conn,
-                                                    user_id,
+        res = database_utils.getAggregateActivitiesRange(conn,
                                                     date_start,
                                                     date_end)
         kind = date_start + "-" + date_end
 
     return {
-        "message": "historical personal footprint",
+        "message": "historical aggregate footprint",
         "kind": kind,
         "data": res
     }
