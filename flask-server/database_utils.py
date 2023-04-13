@@ -75,10 +75,10 @@ def getUserActivitiesHistorical(connection, user_id, preset_type):
 
 def getAggregateEmissionsHistorical(connection, preset_type):
     if (preset_type == "day"):
-        query = "SELECT * FROM activities WHERE" \
+        query = "SELECT * FROM activities WHERE " \
                 "timestamp >= now() - interval '1 day'"
     elif (preset_type == "week"):
-        query = "SELECT * FROM activities WHERE" \
+        query = "SELECT * FROM activities WHERE " \
                 "timestamp >= now() - interval '1 week'"
     else:
         query = "SELECT * FROM activities"
@@ -89,10 +89,11 @@ def getAggregateEmissionsHistorical(connection, preset_type):
 
     res = {}
     for elem in data:
-        if elem[6] in res:
-            res[elem[6]] += int(elem[5])
+        date = str(elem[6])
+        if date in res:
+            res[date] += float(elem[5])
         else:
-            res[elem[6]] = int(elem[5])
+            res[date] = float(elem[5])
 
     return res
 
