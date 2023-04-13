@@ -216,7 +216,7 @@ def getActivityFields():
                    {"activities": supportedActivities},
                    {"companies": supportedCompanies}), 200
 
-
+# possibly remove this?
 @app.route("/viewPersonalFootprint", methods=["GET"])
 @token_required
 def viewPersonalFootprint(user_id):
@@ -228,6 +228,33 @@ def viewPersonalFootprint(user_id):
         "grouped_activities": grouped_data,
         "total_user_emissions": total_user
     }, 200
+
+@app.route("/viewHistoricalAggregateFootprint", methods=["POST"])
+def viewHistoricalAggregateFootprint():
+    packet = request.get_json()
+    preset = packet.get("preset")
+
+    if (preset):
+        preset_type = packet.get("preset_type")
+
+        res = database_utils.getAggregateEmissionsHistorical(conn, preset_type)
+        kind = preset_type
+
+    else:
+        date_start = packet.get("date_start")
+        date_end = packet.get("date_end")
+
+        res = database_utils.getAggregateEmissionsRange(conn,
+                                                    date_start,
+                                                    date_end)
+        kind = date_start + "-" + date_end
+
+    return {
+        "message": "historical aggregate footprint",
+        "kind": kind,
+        "data": res
+    }
+
 
 
 @app.route("/viewAggregateFootprint", methods=["GET"])

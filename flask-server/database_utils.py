@@ -28,12 +28,13 @@ def inputActivity(
     emissions,
     timestamp,
 ):
+    converted_user_id = uuid.UUID(user_id)
     cursor = connection.cursor()
     print("submitting data with format specifiers")
     query = "INSERT INTO activities VALUES (%s, %s, %s, %s, %s, %s, %s)"
     cursor.execute(
         query,
-        (activity_id, user_id, activity_type, company, amount, emissions, timestamp),
+        (activity_id, converted_user_id, activity_type, company, amount, emissions, timestamp),
     )
     connection.commit()
     cursor.close()
@@ -53,6 +54,78 @@ def getUserActivities(connection, user_id):
 
     return formatted_data, grouped_data
 
+def getUserActivitiesHistorical(connection, user_id, preset_type):
+    converted_user_id = uuid.UUID(user_id)
+
+
+    if (preset_type == "day"):
+        query = "SELECT * FROM activities WHERE userid = %s AND" \
+                "timestamp >= now() - interval '1 day'"
+    elif (preset_type == "week"):
+        query = "SELECT * FROM activities WHERE userid = %s AND" \
+                "timestamp >= now() - interval '1 week'"
+    else:
+        query = "SELECT * FROM activities WHERE userid = %s"
+    cursor = connection.cursor()
+    cursor.execute(query, (converted_user_id))
+    data = cursor.fetchall()
+    cursor.close()
+
+    return formatActivities(data)
+
+def getAggregateEmissionsHistorical(connection, preset_type):
+    if (preset_type == "day"):
+        query = "SELECT * FROM activities WHERE" \
+                "timestamp >= now() - interval '1 day'"
+    elif (preset_type == "week"):
+        query = "SELECT * FROM activities WHERE" \
+                "timestamp >= now() - interval '1 week'"
+    else:
+        query = "SELECT * FROM activities"
+    cursor = connection.cursor()
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+
+    res = {}
+    for elem in data:
+        if elem[6] in res:
+            res[elem[6]] += int(elem[5])
+        else:
+            res[elem[6]] = int(elem[5])
+
+    return res
+
+def getUserActivitiesRange(connection, user_id, date_start, date_end):
+    converted_user_id = uuid.UUID(user_id)
+
+    query = "SELECT * FROM activities WHERE userid = %s AND" \
+            "timestamp >= %s AND" \
+            "timestamp <= %s"
+
+    cursor = connection.cursor()
+    cursor.execute(query, (converted_user_id, date_start, date_end))
+    data = cursor.fetchall()
+    cursor.close()
+
+    return formatActivities(data)
+
+def getAggregateEmissionsRange(connection, date_start, date_end):
+    query = "SELECT * FROM activities WHERE" \
+            "timestamp >= %s AND" \
+            "timestamp <= %s"
+
+    cursor = connection.cursor()
+    cursor.execute(query, (date_start, date_end))
+    data = cursor.fetchall()
+    cursor.close()
+
+    res = 0
+    for elem in data:
+        res += int(elem[6])
+
+    return res
+
 
 def getAllActivities(connection):
     cursor = connection.cursor()
@@ -66,7 +139,7 @@ def getAllActivities(connection):
 
     return formatted_data, grouped_data
 
-def getTotalEmissions(connection, user_id=False):
+def getTotalEmissions(connection, user_id=None):
     cursor = connection.cursor()
     if (user_id):
         converted_user_id = uuid.UUID(user_id)
