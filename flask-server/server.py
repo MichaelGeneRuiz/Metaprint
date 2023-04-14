@@ -203,11 +203,16 @@ def getActivityFields():
     supportedActivities = database_utils.getSupportedActivities(conn)
     supportedCompanies = database_utils.getSupportedCompanies(conn)
 
-    return jsonify({"message": "success"},
-                   {"activities": supportedActivities},
-                   {"companies": supportedCompanies}), 200
+    return (
+        jsonify(
+            {"message": "success"},
+            {"activities": supportedActivities},
+            {"companies": supportedCompanies},
+        ),
+        200,
+    )
 
-# possibly remove this?
+
 @app.route("/viewPersonalFootprint", methods=["GET"])
 @token_required
 def viewPersonalFootprint(user_id):
@@ -217,8 +222,9 @@ def viewPersonalFootprint(user_id):
         "message": "personal footprint",
         "activities": all_data,
         "grouped_activities": grouped_data,
-        "total_user_emissions": total_user
+        "total_user_emissions": total_user,
     }, 200
+
 
 @app.route("/viewHistoricalAggregateFootprint", methods=["POST"])
 @token_required
@@ -226,7 +232,7 @@ def viewHistoricalAggregateFootprint(user_id):
     packet = request.get_json()
     preset = packet.get("preset")
 
-    if (preset):
+    if preset:
         preset_type = packet.get("preset_type")
 
         res = database_utils.getAggregateEmissionsHistorical(conn, preset_type)
@@ -236,17 +242,10 @@ def viewHistoricalAggregateFootprint(user_id):
         date_start = packet.get("date_start")
         date_end = packet.get("date_end")
 
-        res = database_utils.getAggregateEmissionsRange(conn,
-                                                    date_start,
-                                                    date_end)
+        res = database_utils.getAggregateEmissionsRange(conn, date_start, date_end)
         kind = date_start + "-" + date_end
 
-    return {
-        "message": "historical aggregate footprint",
-        "kind": kind,
-        "data": res
-    }
-
+    return {"message": "historical aggregate footprint", "kind": kind, "data": res}
 
 
 @app.route("/viewAggregateFootprint", methods=["GET"])
@@ -260,7 +259,7 @@ def viewAggregateFootprint(user_id):
         "activities": all_data,
         "grouped_activities": grouped_data,
         "total_emissions": total,
-        "total_user_emissions": total_user
+        "total_user_emissions": total_user,
     }, 200
 
 
