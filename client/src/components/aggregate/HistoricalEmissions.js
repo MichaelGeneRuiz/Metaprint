@@ -1,7 +1,6 @@
 import { useState, useContext } from "react";
 
 import Container from "react-bootstrap/Container";
-import Stack from "react-bootstrap/Stack";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";

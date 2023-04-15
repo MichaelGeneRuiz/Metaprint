@@ -5,14 +5,17 @@
   margin-bottom: 2rem;
 }
 
-.header {
+.button_row {
   align-self: center;
+  margin: 5px;
 }
 
-.button{
+.button {
   align-self: center;
+  min-width: 7rem;
 }
 
 .text {
   align-self: center;
+  text-align: center;
 }
