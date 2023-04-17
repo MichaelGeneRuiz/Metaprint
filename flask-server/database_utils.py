@@ -39,6 +39,16 @@ def inputActivity(
     connection.commit()
     cursor.close()
 
+def inputApproved(connection, kind, name):
+    if (kind == "company"):
+        query = "INSERT INTO approved_companies VALUES (%s)"
+    else:
+        query = "INSERT INTO approved_activities VALUES (%s)"
+    cursor = connection.cursor()
+    cursor.execute(query, name)
+    connection.commit()
+    cursor.close()
+
 
 def getUserActivities(connection, user_id):
     converted_user_id = uuid.UUID(user_id)
