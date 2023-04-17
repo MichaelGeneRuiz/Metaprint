@@ -121,19 +121,22 @@ def getTotalEmissions(connection, user_id=None):
     cursor = connection.cursor()
     if (user_id):
         converted_user_id = uuid.UUID(user_id)
-        query = "SELECT SUM(emissions) AS total \
+        query = "SELECT (amount, emissions) AS total \
                 FROM activities \
                 WHERE userid = %s"
         cursor.execute(query, (converted_user_id,))
     else:
-        query = "SELECT SUM(emissions) AS total \
+        query = "SELECT (amount, emissions) AS total \
                 FROM activities"
         cursor.execute(query)
 
     data = cursor.fetchone()
     cursor.close()
+    res = 0
+    for entry in data:
+        res += int(entry[0]) * int(entry[1])
 
-    return data[0]
+    return res
 
 def getSupportedActivities(connection):
     query = "SELECT name FROM approved_activities"
