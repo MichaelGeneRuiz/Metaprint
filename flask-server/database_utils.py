@@ -39,6 +39,16 @@ def inputActivity(
     connection.commit()
     cursor.close()
 
+def inputApproved(connection, kind, name):
+    if (kind == "company"):
+        query = "INSERT INTO approved_companies VALUES (%s)"
+    else:
+        query = "INSERT INTO approved_activities VALUES (%s)"
+    cursor = connection.cursor()
+    cursor.execute(query, name)
+    connection.commit()
+    cursor.close()
+
 
 def getUserActivities(connection, user_id):
     converted_user_id = uuid.UUID(user_id)
@@ -69,17 +79,17 @@ def getAggregateEmissionsHistorical(connection, preset_type):
     cursor.close()
 
     res = {}
-    for elem in data:
-        date = str(elem[6])
+    for entry in data:
+        date = str(entry[6])
         if date in res:
-            res[date] += float(elem[5])
+            res[date] += int(entry[0]) * int(entry[1])
         else:
-            res[date] = float(elem[5])
+            res[date] = int(entry[0]) * int(entry[1])
 
     return res
 
 def getAggregateEmissionsRange(connection, date_start, date_end):
-    query = "SELECT * FROM activities WHERE " \
+    query = "SELECT (amount, emissions) FROM activities WHERE " \
             "timestamp >= %s AND " \
             "timestamp <= %s"
 
@@ -89,8 +99,8 @@ def getAggregateEmissionsRange(connection, date_start, date_end):
     cursor.close()
 
     res = 0
-    for elem in data:
-        res += int(elem[5])
+    for entry in data:
+        res += int(entry[0]) * int(entry[1])
 
     return res
 
@@ -111,19 +121,22 @@ def getTotalEmissions(connection, user_id=None):
     cursor = connection.cursor()
     if (user_id):
         converted_user_id = uuid.UUID(user_id)
-        query = "SELECT SUM(emissions) AS total \
+        query = "SELECT (amount, emissions) AS total \
                 FROM activities \
                 WHERE userid = %s"
         cursor.execute(query, (converted_user_id,))
     else:
-        query = "SELECT SUM(emissions) AS total \
+        query = "SELECT (amount, emissions) AS total \
                 FROM activities"
         cursor.execute(query)
 
     data = cursor.fetchone()
     cursor.close()
+    res = 0
+    for entry in data:
+        res += int(entry[0]) * int(entry[1])
 
-    return data[0]
+    return res
 
 def getSupportedActivities(connection):
     query = "SELECT name FROM approved_activities"
