@@ -86,7 +86,7 @@ def home():
     query = "SELECT COUNT(userid) FROM users"
     cursor.execute(query)
     user_count = cursor.fetchall()
-    return {"users": user_count}
+    return {"users": user_count}, 200
 
 
 @app.route("/auth/signup", methods=["POST"])
@@ -245,7 +245,7 @@ def viewHistoricalAggregateFootprint(user_id):
         res = database_utils.getAggregateEmissionsRange(conn, date_start, date_end)
         kind = date_start + "-" + date_end
 
-    return {"message": "historical aggregate footprint", "kind": kind, "data": res}
+    return {"message": "historical aggregate footprint", "kind": kind, "data": res}, 200
 
 
 @app.route("/viewAggregateFootprint", methods=["GET"])
@@ -263,16 +263,26 @@ def viewAggregateFootprint(user_id):
     }, 200
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+@app.route("/inputApprovedCompany", methods=["POST"])
+@token_required
+def inputApprovedCompany(user_id):
+    packet = request.get_json()
+    companyName = packet.get("company")
+    database_utils.inputApproved(conn, "company", companyName)
+    return {"message": "Company submitted! You may continue."}, 201
 
-
-@app.route("/inputCompany", methods=["POST"])
-def inputCompany():
-    # Do something with post data
-    return {"message": "input company success"}
+@app.route("/inputApprovedActivity", methods=["POST"])
+@token_required
+def inputApprovedActivity(user_id):
+    packet = request.get_json()
+    activityName = packet.get("company")
+    database_utils.inputApproved(conn, "activity", activityName)
+    return {"message": "Activity submitted! You may continue."}, 201
 
 
 @app.route("/viewTips", methods=["GET"])
 def viewTips():
     return {"message": "tips"}
+
+if __name__ == "__main__":
+    app.run(debug=True)
