@@ -79,17 +79,17 @@ def getAggregateEmissionsHistorical(connection, preset_type):
     cursor.close()
 
     res = {}
-    for elem in data:
-        date = str(elem[6])
+    for entry in data:
+        date = str(entry[6])
         if date in res:
-            res[date] += float(elem[5])
+            res[date] += int(entry[0]) * int(entry[1])
         else:
-            res[date] = float(elem[5])
+            res[date] = int(entry[0]) * int(entry[1])
 
     return res
 
 def getAggregateEmissionsRange(connection, date_start, date_end):
-    query = "SELECT * FROM activities WHERE " \
+    query = "SELECT (amount, emissions) FROM activities WHERE " \
             "timestamp >= %s AND " \
             "timestamp <= %s"
 
@@ -99,8 +99,8 @@ def getAggregateEmissionsRange(connection, date_start, date_end):
     cursor.close()
 
     res = 0
-    for elem in data:
-        res += int(elem[5])
+    for entry in data:
+        res += int(entry[0]) * int(entry[1])
 
     return res
 
