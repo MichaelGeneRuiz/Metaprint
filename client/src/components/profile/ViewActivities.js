@@ -33,12 +33,21 @@ function ViewActivities(props) {
 
     const today = new Date();
 
-    setStartDate(today.toDateString());
-    setEndDate(today.toDateString());
+    const todayStart = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() - 1,
+      20
+    );
+
+    console.log(todayStart);
+
+    setStartDate(todayStart.toUTCString().slice(0, -13));
+    setEndDate(todayStart.toUTCString().slice(0, -13));
 
     for (const activity of activities) {
       const date = new Date(activity.date);
-      if (date === today) {
+      if (todayStart <= date && date <= todayStart) {
         todayActivities.push(activity);
       }
     }
@@ -51,11 +60,11 @@ function ViewActivities(props) {
   function showRangeActivities() {
     let rangeActivities = [];
 
-    const fromDate = new Date(formStartDate + "T00:00:00");
-    const toDate = new Date(formEndDate + "T00:00:00");
+    const fromDate = new Date(formStartDate);
+    const toDate = new Date(formEndDate);
 
-    setStartDate(fromDate.toDateString());
-    setEndDate(toDate.toDateString());
+    setStartDate(fromDate.toUTCString().slice(0, -13));
+    setEndDate(toDate.toUTCString().slice(0, -13));
 
     for (const activity of activities) {
       const date = new Date(activity.date);
@@ -77,11 +86,18 @@ function ViewActivities(props) {
     const lastWeek = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate() - 7
+      today.getDate() - 8,
+      20
+    );
+    const todayStart = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() - 1,
+      20
     );
 
-    setStartDate(lastWeek.toDateString());
-    setEndDate(today.toDateString());
+    setStartDate(lastWeek.toUTCString().slice(0, -13));
+    setEndDate(todayStart.toUTCString().slice(0, -13));
 
     for (const activity of activities) {
       const date = new Date(activity.date);
@@ -143,13 +159,13 @@ function ViewActivities(props) {
           </Button>
         </Col>
         <Col>
-          <Button className={classes.button} onClick={showTodayActivities}>
-            Today
+          <Button className={classes.button} onClick={showPastWeekActivities}>
+            Past Week
           </Button>
         </Col>
         <Col>
-          <Button className={classes.button} onClick={showPastWeekActivities}>
-            Past Week
+          <Button className={classes.button} onClick={showTodayActivities}>
+            Today
           </Button>
         </Col>
       </Row>
