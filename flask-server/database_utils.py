@@ -82,14 +82,14 @@ def getAggregateEmissionsHistorical(connection, preset_type):
     for entry in data:
         date = str(entry[6])
         if date in res:
-            res[date] += int(entry[0]) * int(entry[1])
+            res[date] += entry[4] * entry[5]
         else:
-            res[date] = int(entry[0]) * int(entry[1])
+            res[date] = entry[4] * entry[5]
 
     return res
 
 def getAggregateEmissionsRange(connection, date_start, date_end):
-    query = "SELECT (amount, emissions) FROM activities WHERE " \
+    query = "SELECT amount, emissions FROM activities WHERE " \
             "timestamp >= %s AND " \
             "timestamp <= %s"
 
@@ -100,7 +100,7 @@ def getAggregateEmissionsRange(connection, date_start, date_end):
 
     res = 0
     for entry in data:
-        res += int(entry[0]) * int(entry[1])
+        res += entry[0] * entry[1]
 
     return res
 
@@ -121,20 +121,20 @@ def getTotalEmissions(connection, user_id=None):
     cursor = connection.cursor()
     if (user_id):
         converted_user_id = uuid.UUID(user_id)
-        query = "SELECT (amount, emissions) AS total \
+        query = "SELECT amount, emissions \
                 FROM activities \
                 WHERE userid = %s"
         cursor.execute(query, (converted_user_id,))
     else:
-        query = "SELECT (amount, emissions) AS total \
+        query = "SELECT amount, emissions \
                 FROM activities"
         cursor.execute(query)
 
-    data = cursor.fetchone()
+    data = cursor.fetchall()
     cursor.close()
     res = 0
     for entry in data:
-        res += int(entry[0]) * int(entry[1])
+        res += entry[0] * entry[1]
 
     return res
 
