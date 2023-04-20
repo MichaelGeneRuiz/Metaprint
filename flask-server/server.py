@@ -205,9 +205,11 @@ def getActivityFields():
 
     return (
         jsonify(
-            {"message": "success"},
-            {"activities": supportedActivities},
-            {"companies": supportedCompanies},
+            {
+                "message": "success",
+                "activities": supportedActivities,
+                "companies": supportedCompanies,
+            },
         ),
         200,
     )
@@ -218,6 +220,7 @@ def getActivityFields():
 def viewPersonalFootprint(user_id):
     all_data, grouped_data = database_utils.getUserActivities(conn, user_id)
     total_user = database_utils.getTotalEmissions(conn, user_id)
+    
     return jsonify(
         {
             "message": "personal footprint",
@@ -260,6 +263,7 @@ def viewAggregateFootprint(user_id):
     all_data, grouped_data = database_utils.getAllActivities(conn)
     total = database_utils.getTotalEmissions(conn)
     total_user = database_utils.getTotalEmissions(conn, user_id)
+    
     return jsonify(
         {
         "message": "aggregate footprint",
@@ -295,6 +299,7 @@ def viewTips(user_id):
         "message": "tips",
         "tips" : res
     }), 200
+
 
 if __name__ == "__main__":
     app.run(debug=True)
