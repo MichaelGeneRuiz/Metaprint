@@ -139,14 +139,15 @@ def getTotalEmissions(connection, user_id=None):
     return res
 
 def getSupportedActivities(connection):
-    query = "SELECT name FROM approved_activities"
+    query = "SELECT * FROM approved_activities"
     cursor = connection.cursor()
     cursor.execute(query)
     data = cursor.fetchall()
     res = []
     for elem in data:
-        # 0 is the index for name
-        res.append(elem[0])
+        # 0 is the index for name, 1 is emissions in kg/unit
+        # returns [activity_name, emission]
+        res.append([elem[0], elem[1]])
     return res
 
 def getSupportedCompanies(connection):
