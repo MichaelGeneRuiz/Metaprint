@@ -34,13 +34,22 @@ def inputActivity(
     query = "INSERT INTO activities VALUES (%s, %s, %s, %s, %s, %s, %s)"
     cursor.execute(
         query,
-        (activity_id, converted_user_id, activity_type, company, amount, emissions, timestamp),
+        (
+            activity_id,
+            converted_user_id,
+            activity_type,
+            company,
+            amount,
+            emissions,
+            timestamp,
+        ),
     )
     connection.commit()
     cursor.close()
 
+
 def inputApproved(connection, kind, name):
-    if (kind == "company"):
+    if kind == "company":
         query = "INSERT INTO approved_companies VALUES (%s)"
     else:
         query = "INSERT INTO approved_activities VALUES (%s)"
@@ -64,13 +73,16 @@ def getUserActivities(connection, user_id):
 
     return formatted_data, grouped_data
 
+
 def getAggregateEmissionsHistorical(connection, preset_type):
-    if (preset_type == "day"):
-        query = "SELECT * FROM activities WHERE " \
-                "timestamp >= now() - interval '1 day'"
-    elif (preset_type == "week"):
-        query = "SELECT * FROM activities WHERE " \
-                "timestamp >= now() - interval '1 week'"
+    if preset_type == "day":
+        query = (
+            "SELECT * FROM activities WHERE " "timestamp >= now() - interval '1 day'"
+        )
+    elif preset_type == "week":
+        query = (
+            "SELECT * FROM activities WHERE " "timestamp >= now() - interval '1 week'"
+        )
     else:
         query = "SELECT * FROM activities"
     cursor = connection.cursor()
@@ -88,10 +100,13 @@ def getAggregateEmissionsHistorical(connection, preset_type):
 
     return res
 
+
 def getAggregateEmissionsRange(connection, date_start, date_end):
-    query = "SELECT amount, emissions FROM activities WHERE " \
-            "timestamp >= %s AND " \
-            "timestamp <= %s"
+    query = (
+        "SELECT amount, emissions FROM activities WHERE "
+        "timestamp >= %s AND "
+        "timestamp <= %s"
+    )
 
     cursor = connection.cursor()
     cursor.execute(query, (date_start, date_end))
@@ -117,9 +132,10 @@ def getAllActivities(connection):
 
     return formatted_data, grouped_data
 
+
 def getTotalEmissions(connection, user_id=None):
     cursor = connection.cursor()
-    if (user_id):
+    if user_id:
         converted_user_id = uuid.UUID(user_id)
         query = "SELECT amount, emissions \
                 FROM activities \
@@ -138,18 +154,21 @@ def getTotalEmissions(connection, user_id=None):
 
     return res
 
+
 def getSupportedActivities(connection):
     query = "SELECT * FROM approved_activities"
     cursor = connection.cursor()
     cursor.execute(query)
     data = cursor.fetchall()
     cursor.close()
-    res = []
+    
+    res = {}
     for elem in data:
         # 0 is the index for name, 1 is emissions in kg/unit
         # returns [activity_name, emission]
-        res.append([elem[0], elem[1]])
+        res[elem[0]] = elem[1]
     return res
+
 
 def getSupportedCompanies(connection):
     query = "SELECT name FROM approved_companies"
@@ -172,7 +191,6 @@ def getTips(connection):
     for elem in data:
         res[elem[0]] = elem[1]
     return res;
-
 
 # formats activities into a list of dicts
 def formatActivities(data):

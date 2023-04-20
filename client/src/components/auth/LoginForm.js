@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import Stack from "react-bootstrap/Stack";
 import Alert from "react-bootstrap/Alert";
 
 import AuthContext from "../../context/AuthContext";
@@ -158,16 +157,12 @@ function LoginForm() {
             </Form.Text>
           )}
         </Form.Group>
-        <Stack direction="horizontal">
-          <Button type="submit">Submit</Button>
-          <Button
-            type="button"
-            className="ms-auto"
-            onClick={switchAuthModeHandler}
-          >
-            {isLogin ? "Create New Account" : "Login With Existing Account"}
-          </Button>
-        </Stack>
+        <Button type="button" onClick={switchAuthModeHandler}>
+          {isLogin ? "Create New Account" : "Login With Existing Account"}
+        </Button>
+        <Button style={{ float: "right" }} className="ms-auto" type="submit">
+          Submit
+        </Button>
       </Form>
     </Container>
   );
