@@ -86,7 +86,7 @@ def home():
     query = "SELECT COUNT(userid) FROM users"
     cursor.execute(query)
     user_count = cursor.fetchall()
-    return {"users": user_count}, 200
+    return jsonify({"users": user_count}), 200
 
 
 @app.route("/auth/signup", methods=["POST"])
@@ -205,9 +205,11 @@ def getActivityFields():
 
     return (
         jsonify(
-            {"message": "success"},
-            {"activities": supportedActivities},
-            {"companies": supportedCompanies},
+            {
+                "message": "success",
+                "activities": supportedActivities,
+                "companies": supportedCompanies,
+            },
         ),
         200,
     )
@@ -218,12 +220,17 @@ def getActivityFields():
 def viewPersonalFootprint(user_id):
     all_data, grouped_data = database_utils.getUserActivities(conn, user_id)
     total_user = database_utils.getTotalEmissions(conn, user_id)
-    return {
-        "message": "personal footprint",
-        "activities": all_data,
-        "grouped_activities": grouped_data,
-        "total_user_emissions": total_user,
-    }, 200
+    return (
+        jsonify(
+            {
+                "message": "personal footprint",
+                "activities": all_data,
+                "grouped_activities": grouped_data,
+                "total_user_emissions": total_user,
+            }
+        ),
+        200,
+    )
 
 
 @app.route("/viewHistoricalAggregateFootprint", methods=["POST"])
@@ -245,7 +252,12 @@ def viewHistoricalAggregateFootprint(user_id):
         res = database_utils.getAggregateEmissionsRange(conn, date_start, date_end)
         kind = date_start + "-" + date_end
 
-    return {"message": "historical aggregate footprint", "kind": kind, "data": res}, 200
+    return (
+        jsonify(
+            {"message": "historical aggregate footprint", "kind": kind, "data": res}
+        ),
+        200,
+    )
 
 
 @app.route("/viewAggregateFootprint", methods=["GET"])
@@ -254,13 +266,16 @@ def viewAggregateFootprint(user_id):
     all_data, grouped_data = database_utils.getAllActivities(conn)
     total = database_utils.getTotalEmissions(conn)
     total_user = database_utils.getTotalEmissions(conn, user_id)
-    return {
-        "message": "aggregate footprint",
-        "activities": all_data,
-        "grouped_activities": grouped_data,
-        "total_emissions": total,
-        "total_user_emissions": total_user,
-    }, 200
+    return (
+        jsonify(
+            {
+                "message": "aggregate footprint",
+                "total_emissions": total,
+                "total_user_emissions": total_user,
+            }
+        ),
+        200,
+    )
 
 
 @app.route("/inputApprovedCompany", methods=["POST"])
@@ -269,7 +284,8 @@ def inputApprovedCompany(user_id):
     packet = request.get_json()
     companyName = packet.get("company")
     database_utils.inputApproved(conn, "company", companyName)
-    return {"message": "Company submitted! You may continue."}, 201
+    return jsonify({"message": "Company submitted! You may continue."}), 201
+
 
 @app.route("/inputApprovedActivity", methods=["POST"])
 @token_required
@@ -277,12 +293,13 @@ def inputApprovedActivity(user_id):
     packet = request.get_json()
     activityName = packet.get("company")
     database_utils.inputApproved(conn, "activity", activityName)
-    return {"message": "Activity submitted! You may continue."}, 201
+    return jsonify({"message": "Activity submitted! You may continue."}), 201
 
 
 @app.route("/viewTips", methods=["GET"])
 def viewTips():
     return {"message": "tips"}
+
 
 if __name__ == "__main__":
     app.run(debug=True)
