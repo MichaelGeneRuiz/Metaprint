@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
@@ -9,12 +9,15 @@ import AuthContext from "../../context/AuthContext";
 
 import classes from "./InputActivity.module.css";
 
-function InputActivity() {
+function InputActivity(props) {
+  const { activities } = props;
+
   const [activityType, setActivityType] = useState("");
   const [company, setCompany] = useState("");
   const [amount, setAmount] = useState(1);
   const [emissions, setEmissions] = useState(0);
   const [timestamp, setTimestamp] = useState("");
+  const [presetMode, setPresetMode] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -55,12 +58,32 @@ function InputActivity() {
       setErrorMessage(error.message);
     }
 
-    setActivityType("");
+    if (!presetMode) {
+      setActivityType("");
+      setEmissions(0);
+    }
+
     setCompany("");
     setAmount(1);
-    setEmissions(0);
     setTimestamp("");
   }
+
+  function togglePresetMode() {
+    setPresetMode((prevState) => !prevState);
+
+    if (!presetMode) {
+      setActivityType(Object.keys(activities)[0]);
+      setEmissions(activities[Object.keys(activities)[0]]);
+    } else {
+      setActivityType("");
+      setEmissions(0);
+    }
+  }
+
+  useEffect(() => {
+    setActivityType(Object.keys(activities)[0]);
+    setEmissions(activities[Object.keys(activities)[0]]);
+  }, [activities]);
 
   return (
     <Container>
@@ -78,14 +101,30 @@ function InputActivity() {
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicActivityType">
-          <Form.Label>Activity Type</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Activity Type"
-            required
-            onChange={(e) => setActivityType(e.target.value)}
-            value={activityType}
-          />
+          <Form.Label>Activity</Form.Label>
+          {!presetMode && (
+            <Form.Control
+              type="text"
+              placeholder="Activity"
+              required
+              onChange={(e) => setActivityType(e.target.value)}
+              value={activityType}
+            />
+          )}
+          {presetMode && (
+            <Form.Select
+              required
+              onChange={(e) => {
+                setActivityType(e.target.value);
+                setEmissions(activities[e.target.value]);
+              }}
+              value={activityType}
+            >
+              {Object.keys(activities).map((activity) => (
+                <option key={activity}>{activity}</option>
+              ))}
+            </Form.Select>
+          )}
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicCompany">
           <Form.Label>Company (Optional)</Form.Label>
@@ -98,15 +137,28 @@ function InputActivity() {
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicEmissions">
           <Form.Label>Emissions</Form.Label>
-          <Form.Control
-            className={classes.no_arrows}
-            type="number"
-            min="0"
-            step="0.01"
-            required
-            onChange={(e) => setEmissions(e.target.value)}
-            value={emissions}
-          />
+          {!presetMode && (
+            <Form.Control
+              className={classes.no_arrows}
+              type="number"
+              min="0"
+              step="0.01"
+              required
+              onChange={(e) => setEmissions(e.target.value)}
+              value={emissions ? emissions : 0}
+            />
+          )}
+          {presetMode && (
+            <Form.Control
+              className={classes.no_arrows}
+              type="number"
+              min="0"
+              step="0.01"
+              disabled
+              onChange={(e) => setEmissions(e.target.value)}
+              value={emissions ? emissions : 0}
+            />
+          )}
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicAmount">
           <Form.Label>Amount</Form.Label>
@@ -119,7 +171,12 @@ function InputActivity() {
             value={amount}
           />
         </Form.Group>
-        <Button type="submit">Submit</Button>
+        <Button onClick={togglePresetMode}>
+          {presetMode ? "Manual Input" : "Preset Activities"}
+        </Button>
+        <Button style={{ float: "right" }} type="submit">
+          Submit
+        </Button>
       </Form>
     </Container>
   );
