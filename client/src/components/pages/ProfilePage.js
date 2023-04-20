@@ -9,9 +9,10 @@ import ViewActivities from "../profile/ViewActivities";
 
 function ProfilePage() {
   const authCtx = useContext(AuthContext);
-  const [activities, setActivities] = useState([]);
+  const [personalActivities, setPersonalActivities] = useState([]);
+  const [presetActivities, setPresetActivities] = useState([]);
 
-  const getActivities = useCallback(async () => {
+  const getPersonalActivities = useCallback(async () => {
     try {
       const res = await fetch("/viewPersonalFootprint", {
         method: "GET",
@@ -27,15 +28,38 @@ function ProfilePage() {
         throw new Error(data.message);
       }
 
-      setActivities(data.activities);
+      setPersonalActivities(data.activities);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, [authCtx.token]);
+
+  const getPresetActivities = useCallback(async () => {
+    try {
+      const res = await fetch("/getActivityFields", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer: ${authCtx.token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message);
+      }
+
+      setPresetActivities(data.activities);
     } catch (error) {
       console.log(error.message);
     }
   }, [authCtx.token]);
 
   useEffect(() => {
-    getActivities();
-  }, [getActivities]);
+    getPersonalActivities();
+    getPresetActivities();
+  }, [getPersonalActivities, getPresetActivities]);
 
   return (
     <Container>
@@ -45,8 +69,11 @@ function ProfilePage() {
         </div>
       </div>
       <hr />
-      <ViewActivities activities={activities} refresh={getActivities} />
-      <InputActivity />
+      <ViewActivities
+        activities={personalActivities}
+        refresh={getPersonalActivities}
+      />
+      <InputActivity activities={presetActivities} />
     </Container>
   );
 }
