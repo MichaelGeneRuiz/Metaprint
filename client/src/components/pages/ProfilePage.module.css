@@ -1,0 +1,13 @@
+.profile_row {
+  flex-direction: row;
+}
+
+.profile_column {
+  margin-top: 1rem;
+}
+
+@media only screen and (max-width: 768px) {
+  .profile_row {
+    flex-direction: column;
+  }
+}

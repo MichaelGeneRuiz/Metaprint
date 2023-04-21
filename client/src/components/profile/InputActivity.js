@@ -4,18 +4,22 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
+import Spinner from "react-bootstrap/Spinner";
 
 import AuthContext from "../../context/AuthContext";
 
 import classes from "./InputActivity.module.css";
 
 function InputActivity(props) {
-  const { activities } = props;
+  const { activities_dict } = props;
+
+  const [activities, setActivities] = useState(activities_dict.activities);
+  const [emissions, setEmissions] = useState(activities_dict.emissions);
 
   const [activityType, setActivityType] = useState("");
   const [company, setCompany] = useState("");
   const [amount, setAmount] = useState(1);
-  const [emissions, setEmissions] = useState(0);
+  const [formEmissions, setFormEmissions] = useState(0);
   const [timestamp, setTimestamp] = useState("");
   const [presetMode, setPresetMode] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
@@ -33,7 +37,7 @@ function InputActivity(props) {
           activity_type: activityType,
           company,
           amount,
-          emissions,
+          emissions: formEmissions,
           timestamp,
         }),
         headers: {
@@ -60,7 +64,7 @@ function InputActivity(props) {
 
     if (!presetMode) {
       setActivityType("");
-      setEmissions(0);
+      setFormEmissions(0);
     }
 
     setCompany("");
@@ -71,19 +75,22 @@ function InputActivity(props) {
   function togglePresetMode() {
     setPresetMode((prevState) => !prevState);
 
-    if (!presetMode) {
-      setActivityType(Object.keys(activities)[0]);
-      setEmissions(activities[Object.keys(activities)[0]]);
-    } else {
-      setActivityType("");
-      setEmissions(0);
-    }
+    setActivityType("");
+    setFormEmissions(0);
   }
 
   useEffect(() => {
-    setActivityType(Object.keys(activities)[0]);
-    setEmissions(activities[Object.keys(activities)[0]]);
-  }, [activities]);
+    setActivities(activities_dict.activities);
+    setEmissions(activities_dict.emissions);
+  }, [activities_dict]);
+
+  if (!activities || !emissions) {
+    return (
+      <div style={{ textAlign: "center" }}>
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <Container>
@@ -115,13 +122,15 @@ function InputActivity(props) {
             <Form.Select
               required
               onChange={(e) => {
-                setActivityType(e.target.value);
-                setEmissions(activities[e.target.value]);
+                setActivityType(activities[e.target.value]);
+                setFormEmissions(emissions[e.target.value]);
               }}
-              value={activityType}
             >
-              {Object.keys(activities).map((activity) => (
-                <option key={activity}>{activity}</option>
+              <option value="">--Select an Activity--</option>
+              {Object.keys(activities).map((id) => (
+                <option key={id} value={id}>
+                  {activities[id]}
+                </option>
               ))}
             </Form.Select>
           )}
@@ -136,7 +145,7 @@ function InputActivity(props) {
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicEmissions">
-          <Form.Label>Emissions</Form.Label>
+          <Form.Label>Emissions (in kg)</Form.Label>
           {!presetMode && (
             <Form.Control
               className={classes.no_arrows}
@@ -144,8 +153,8 @@ function InputActivity(props) {
               min="0"
               step="0.01"
               required
-              onChange={(e) => setEmissions(e.target.value)}
-              value={emissions ? emissions : 0}
+              onChange={(e) => setFormEmissions(e.target.value)}
+              value={formEmissions ? formEmissions : 0}
             />
           )}
           {presetMode && (
@@ -155,8 +164,8 @@ function InputActivity(props) {
               min="0"
               step="0.01"
               disabled
-              onChange={(e) => setEmissions(e.target.value)}
-              value={emissions ? emissions : 0}
+              onChange={(e) => setFormEmissions(e.target.value)}
+              value={formEmissions ? formEmissions : 0}
             />
           )}
         </Form.Group>

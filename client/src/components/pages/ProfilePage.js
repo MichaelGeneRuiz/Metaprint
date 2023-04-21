@@ -1,16 +1,22 @@
 import { useEffect, useContext, useCallback, useState } from "react";
 
 import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 import AuthContext from "../../context/AuthContext";
 
 import InputActivity from "../profile/InputActivity";
 import ViewActivities from "../profile/ViewActivities";
+import ViewTips from "../profile/ViewTips";
+
+import classes from "./ProfilePage.module.css";
 
 function ProfilePage() {
   const authCtx = useContext(AuthContext);
   const [personalActivities, setPersonalActivities] = useState([]);
-  const [presetActivities, setPresetActivities] = useState([]);
+  const [presetActivities, setPresetActivities] = useState({});
+  const [tipActivities, setTipActivities] = useState([]);
 
   const getPersonalActivities = useCallback(async () => {
     try {
@@ -71,9 +77,17 @@ function ProfilePage() {
       <hr />
       <ViewActivities
         activities={personalActivities}
+        setTipActivities={setTipActivities}
         refresh={getPersonalActivities}
       />
-      <InputActivity activities={presetActivities} />
+      <Row className={classes.profile_row}>
+        <Col>
+          <InputActivity activities_dict={presetActivities} />
+        </Col>
+        <Col className={classes.profile_column}>
+          <ViewTips tipActivities={tipActivities} presets={presetActivities}/>
+        </Col>
+      </Row>
     </Container>
   );
 }
