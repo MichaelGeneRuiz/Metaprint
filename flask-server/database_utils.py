@@ -161,12 +161,14 @@ def getSupportedActivities(connection):
     cursor.execute(query)
     data = cursor.fetchall()
     cursor.close()
-    
-    res = {}
+
+    res = {"activities": {}, "emissions": {}, "tips": {}}
     for elem in data:
-        # 0 is the index for name, 1 is emissions in kg/unit
+        # 0 is the index for id, 1 is activity, 2 is emissions
         # returns [activity_name, emission]
-        res[elem[0]] = elem[1]
+        res["activities"][elem[0]] = elem[1]
+        res["emissions"][elem[0]] = elem[2]
+        res["tips"][elem[0]] = elem[3]
     return res
 
 
@@ -181,16 +183,6 @@ def getSupportedCompanies(connection):
         res.append(elem[0])
     return res
 
-def getTips(connection):
-    query = "SELECT * FROM tips"
-    cursor = connection.cursor()
-    cursor.execute(query)
-    data = cursor.fetchall()
-    cursor.close()
-    res = {}
-    for elem in data:
-        res[elem[0]] = elem[1]
-    return res;
 
 # formats activities into a list of dicts
 def formatActivities(data):
