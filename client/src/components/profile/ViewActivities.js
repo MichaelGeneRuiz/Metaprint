@@ -11,7 +11,7 @@ import Stack from "react-bootstrap/Stack";
 import classes from "./ViewActivities.module.css";
 
 function ViewActivities(props) {
-  const { activities } = props;
+  const { activities, setTipActivities } = props;
 
   const [sortedActivities, setSortedActivities] = useState([]);
   const [startDate, setStartDate] = useState("");
@@ -55,6 +55,7 @@ function ViewActivities(props) {
     const sortedTodayActivities = sortActivities(todayActivities);
 
     setSortedActivities(sortedTodayActivities);
+    setTipActivities(sortedTodayActivities);
   }
 
   function showRangeActivities() {
@@ -110,7 +111,8 @@ function ViewActivities(props) {
     const sortedPastWeekActivities = sortActivities(pastWeekActivities);
 
     setSortedActivities(sortedPastWeekActivities);
-  }, [activities]);
+    setTipActivities(sortedPastWeekActivities);
+  }, [activities, setTipActivities]);
 
   useEffect(() => {
     showPastWeekActivities();
@@ -130,7 +132,7 @@ function ViewActivities(props) {
               <th>Date</th>
               <th>Activity</th>
               <th>Company</th>
-              <th>Emissions</th>
+              <th>Emissions (kg)</th>
               <th>Amount</th>
             </tr>
           </thead>

@@ -99,7 +99,7 @@ function HistoricalEmissions() {
           {Object.keys(historicalPresetData).map((key) => (
             <div key={key}>
               <h2>
-                {key}: {historicalPresetData[key]}
+                {key}: {historicalPresetData[key]} kg
               </h2>
             </div>
           ))}
@@ -146,7 +146,7 @@ function HistoricalEmissions() {
         <div>
           From {new Date(startDate + "T00:00").toDateString()} to{" "}
           {new Date(endDate + "T00:00").toDateString()}, Metaprint users emitted{" "}
-          {historicalRangeData} (fake unit) emissions.
+          {historicalRangeData} kg of emissions.
         </div>
       )}
     </Container>
