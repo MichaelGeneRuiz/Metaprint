@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import Container from "react-bootstrap/Container";
 import Spinner from "react-bootstrap/Spinner";
 
@@ -6,29 +8,38 @@ import classes from "./ViewTips.module.css";
 function ViewTips(props) {
   const { presets, tipActivities } = props;
 
-  if (!presets.tips || !presets.activities || !tipActivities) {
-    return <Spinner />;
-  }
+  const [shownTips, setShownTips] = useState({});
 
-  const tips = presets.tips;
-  const tipActivityNames = tipActivities.map((activity) => activity.type);
-  const presetNames = Object.entries(presets.activities);
-  const shownTips = {};
+  useEffect(() => {
+    if (presets.tips && presets.activities && tipActivities) {
+      const tips = presets.tips;
+      const tipActivityNames = tipActivities.map((activity) => activity.type);
+      const presetNames = Object.entries(presets.activities);
+      const new_tips = {};
 
-  for (const name of tipActivityNames) {
-    for (const id in presetNames) {
-      if (name === presetNames[id][1]) {
-        const tip_id = presetNames[id][0];
-        const tip_array = tips[tip_id];
+      for (const name of tipActivityNames) {
+        for (const id in presetNames) {
+          if (name === presetNames[id][1]) {
+            const tip_id = presetNames[id][0];
+            if (tips[tip_id]) {
+              const tip_array = tips[tip_id];
 
-        const random_tip =
-          tip_array[Math.floor(Math.random() * tip_array.length)];
+              const random_tip =
+                tip_array[Math.floor(Math.random() * tip_array.length)];
 
-        if (!shownTips.hasOwnProperty(tip_id)) {
-          shownTips[tip_id] = random_tip;
+              if (!new_tips.hasOwnProperty(tip_id)) {
+                new_tips[tip_id] = random_tip;
+              }
+            }
+          }
         }
       }
+      setShownTips(new_tips);
     }
+  }, [presets, tipActivities]);
+
+  if (!presets.tips || !presets.activities || !tipActivities) {
+    return <Spinner />;
   }
 
   return (
@@ -39,8 +50,8 @@ function ViewTips(props) {
           Object.keys(shownTips).map((id) => (
             <li key={id}>
               We see that you have the following activity on your list:{" "}
-              <strong>{presets.activities[id]}</strong>.<br /> Here's a tip for
-              you: {shownTips[id]}
+              <u>{presets.activities[id]}</u>
+              <br /> Here's a tip for you: <strong>{shownTips[id]}</strong>
             </li>
           ))}
       </ul>

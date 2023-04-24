@@ -16,6 +16,7 @@ function ProfilePage() {
   const authCtx = useContext(AuthContext);
   const [personalActivities, setPersonalActivities] = useState([]);
   const [presetActivities, setPresetActivities] = useState({});
+  const [presetCompanies, setPresetCompanies] = useState([]);
   const [tipActivities, setTipActivities] = useState([]);
 
   const getPersonalActivities = useCallback(async () => {
@@ -40,7 +41,7 @@ function ProfilePage() {
     }
   }, [authCtx.token]);
 
-  const getPresetActivities = useCallback(async () => {
+  const getPresets = useCallback(async () => {
     try {
       const res = await fetch("/getActivityFields", {
         method: "GET",
@@ -57,6 +58,7 @@ function ProfilePage() {
       }
 
       setPresetActivities(data.activities);
+      setPresetCompanies(data.companies);
     } catch (error) {
       console.log(error.message);
     }
@@ -64,8 +66,8 @@ function ProfilePage() {
 
   useEffect(() => {
     getPersonalActivities();
-    getPresetActivities();
-  }, [getPersonalActivities, getPresetActivities]);
+    getPresets();
+  }, [getPersonalActivities, getPresets]);
 
   return (
     <Container>
@@ -80,12 +82,16 @@ function ProfilePage() {
         setTipActivities={setTipActivities}
         refresh={getPersonalActivities}
       />
+      <hr />
       <Row className={classes.profile_row}>
         <Col>
-          <InputActivity activities_dict={presetActivities} />
+          <InputActivity
+            activities_dict={presetActivities}
+            preset_companies={presetCompanies}
+          />
         </Col>
         <Col className={classes.profile_column}>
-          <ViewTips tipActivities={tipActivities} presets={presetActivities}/>
+          <ViewTips tipActivities={tipActivities} presets={presetActivities} />
         </Col>
       </Row>
     </Container>
