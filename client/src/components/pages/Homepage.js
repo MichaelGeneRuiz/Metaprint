@@ -9,8 +9,6 @@ function Homepage() {
       <TitleBlock />
       <hr/>
       <HomeContent />
-      <hr/>
-      <div>Other Content</div>
     </Container>
   );
 }

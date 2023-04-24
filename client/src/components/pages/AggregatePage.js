@@ -11,6 +11,7 @@ function AggregatePage() {
   const authCtx = useContext(AuthContext);
   const [totalEmissions, setTotalEmissions] = useState(0);
   const [userEmissions, setUserEmissions] = useState(0);
+  const [companyEmissions, setCompanyEmissions] = useState([]);
   const [numUsers, setNumUsers] = useState(0);
 
   const getNumUsers = useCallback(async () => {
@@ -42,6 +43,7 @@ function AggregatePage() {
 
       setTotalEmissions(data.total_emissions);
       setUserEmissions(data.total_user_emissions);
+      setCompanyEmissions(data.annual_company_emissions);
     } catch (error) {
       console.log(error.message);
     }
@@ -57,10 +59,11 @@ function AggregatePage() {
       <TotalEmissions
         userEmissions={userEmissions}
         totalEmissions={totalEmissions}
+        companyEmissions={companyEmissions}
       />
-      <hr/>
+      <hr />
       <HistoricalEmissions />
-      <hr/>
+      <hr />
       <div>There are {numUsers} users in the database.</div>
     </Container>
   );
