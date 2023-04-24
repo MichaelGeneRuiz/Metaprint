@@ -1,6 +1,8 @@
 import { useState, useContext, useEffect } from "react";
 
 import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
@@ -11,17 +13,21 @@ import AuthContext from "../../context/AuthContext";
 import classes from "./InputActivity.module.css";
 
 function InputActivity(props) {
-  const { activities_dict } = props;
+  const { activities_dict, preset_companies } = props;
 
   const [activities, setActivities] = useState(activities_dict.activities);
   const [emissions, setEmissions] = useState(activities_dict.emissions);
+  const [companies, setCompanies] = useState(preset_companies);
 
   const [activityType, setActivityType] = useState("");
   const [company, setCompany] = useState("");
   const [amount, setAmount] = useState(1);
   const [formEmissions, setFormEmissions] = useState(0);
   const [timestamp, setTimestamp] = useState("");
+
   const [presetMode, setPresetMode] = useState(true);
+  const [presetCompanyMode, setPresetCompanyMode] = useState(false);
+
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -79,10 +85,21 @@ function InputActivity(props) {
     setFormEmissions(0);
   }
 
+  function togglePresetCompanyMode() {
+    setPresetCompanyMode((prevState) => !prevState);
+
+    if (presetCompanyMode) {
+      setCompany("");
+    } else {
+      setCompany(companies[0]);
+    }
+  }
+
   useEffect(() => {
     setActivities(activities_dict.activities);
     setEmissions(activities_dict.emissions);
-  }, [activities_dict]);
+    setCompanies(preset_companies);
+  }, [activities_dict, preset_companies]);
 
   if (!activities || !emissions) {
     return (
@@ -137,12 +154,26 @@ function InputActivity(props) {
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicCompany">
           <Form.Label>Company (Optional)</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Company Name"
-            onChange={(e) => setCompany(e.target.value)}
-            value={company}
-          />
+          {!presetCompanyMode && (
+            <Form.Control
+              type="text"
+              placeholder="Company Name"
+              onChange={(e) => setCompany(e.target.value)}
+              value={company}
+            />
+          )}
+          {presetCompanyMode && (
+            <Form.Select
+              required
+              onChange={(e) => {
+                setCompany(e.target.value);
+              }}
+            >
+              {companies.map((company) => (
+                <option key={company}>{company}</option>
+              ))}
+            </Form.Select>
+          )}
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicEmissions">
           <Form.Label>Emissions (in kg)</Form.Label>
@@ -180,12 +211,21 @@ function InputActivity(props) {
             value={amount}
           />
         </Form.Group>
-        <Button onClick={togglePresetMode}>
-          {presetMode ? "Manual Input" : "Preset Activities"}
-        </Button>
-        <Button style={{ float: "right" }} type="submit">
-          Submit
-        </Button>
+        <Row>
+          <Col>
+            <Button onClick={togglePresetMode}>
+              {presetMode ? "Manual Activity Input" : "Preset Activities"}
+            </Button>
+          </Col>
+          <Col>
+            <Button onClick={togglePresetCompanyMode}>
+              {presetCompanyMode ? "Manual Company Input" : "Preset Companies"}
+            </Button>
+          </Col>
+          <Col>
+            <Button type="submit">Submit</Button>
+          </Col>
+        </Row>
       </Form>
     </Container>
   );

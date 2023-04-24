@@ -40,8 +40,6 @@ function ViewActivities(props) {
       20
     );
 
-    console.log(todayStart);
-
     setStartDate(todayStart.toUTCString().slice(0, -13));
     setEndDate(todayStart.toUTCString().slice(0, -13));
 
@@ -132,7 +130,7 @@ function ViewActivities(props) {
               <th>Date</th>
               <th>Activity</th>
               <th>Company</th>
-              <th>Emissions (kg)</th>
+              <th>Emissions</th>
               <th>Amount</th>
             </tr>
           </thead>
@@ -142,7 +140,7 @@ function ViewActivities(props) {
                 <td>{new Date(a.date).toUTCString().slice(0, -13)}</td>
                 <td>{a.type}</td>
                 <td>{a.company ? a.company : "N/A"}</td>
-                <td>{a.emissions}</td>
+                <td>{a.emissions} kg</td>
                 <td>{a.amount}</td>
               </tr>
             ))}
