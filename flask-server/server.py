@@ -262,11 +262,11 @@ def viewHistoricalAggregateFootprint(user_id):
 
 
 @app.route("/viewAggregateFootprint", methods=["GET"])
-# @token_required
+@token_required
 def viewAggregateFootprint():
     all_data, grouped_data = database_utils.getAllActivities(conn)
     total = database_utils.getTotalEmissions(conn)
-    # total_user = database_utils.getTotalEmissions(conn, user_id)
+    total_user = database_utils.getTotalEmissions(conn, user_id)
     annual_company = database_utils.getCompanyEmissions(conn)
     return (
         jsonify(
