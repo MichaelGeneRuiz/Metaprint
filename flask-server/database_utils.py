@@ -44,12 +44,12 @@ def inputActivity(
         ),
     )
     # update corresponding company emissions too
-    query_update_company = "UPDATE approved_companies " \
-                           "SET annualemissions = ( " \
-                           "SELECT annualemissions FROM approved_companies " \
-                           "WHERE companyname = (%s)" \
-                           ") + (%s) WHERE companyname = (%s)"
-    cursor.execute(query_update_company, (company, emissions, company))
+    # query_update_company = "UPDATE approved_companies " \
+    #                        "SET annualemissions = ( " \
+    #                        "SELECT annualemissions FROM approved_companies " \
+    #                        "WHERE companyname = (%s)" \
+    #                        ") + (%s) WHERE companyname = (%s)"
+    # cursor.execute(query_update_company, (company, emissions, company))
     connection.commit()
     cursor.close()
 
