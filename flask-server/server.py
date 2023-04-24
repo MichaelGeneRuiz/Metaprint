@@ -267,13 +267,14 @@ def viewAggregateFootprint(user_id):
     all_data, grouped_data = database_utils.getAllActivities(conn)
     total = database_utils.getTotalEmissions(conn)
     total_user = database_utils.getTotalEmissions(conn, user_id)
-
+    annual_company = database_utils.getCompanyEmissions(conn)
     return (
         jsonify(
             {
                 "message": "aggregate footprint",
                 "total_emissions": total,
                 "total_user_emissions": total_user,
+                "annual_company_emissions": annual_company
             }
         ),
         200,

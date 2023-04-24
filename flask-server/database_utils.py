@@ -30,7 +30,6 @@ def inputActivity(
 ):
     converted_user_id = uuid.UUID(user_id)
     cursor = connection.cursor()
-    print("submitting data with format specifiers")
     query = "INSERT INTO activities VALUES (%s, %s, %s, %s, %s, %s, %s)"
     cursor.execute(
         query,
@@ -44,6 +43,13 @@ def inputActivity(
             timestamp,
         ),
     )
+    # update corresponding company emissions too
+    # query_update_company = "UPDATE approved_companies " \
+    #                        "SET annualemissions = ( " \
+    #                        "SELECT annualemissions FROM approved_companies " \
+    #                        "WHERE companyname = (%s)" \
+    #                        ") + (%s) WHERE companyname = (%s)"
+    # cursor.execute(query_update_company, (company, emissions, company))
     connection.commit()
     cursor.close()
 
@@ -154,6 +160,18 @@ def getTotalEmissions(connection, user_id=None):
 
     return res
 
+def getCompanyEmissions(connection):
+    cursor = connection.cursor()
+    query = "SELECT companyname, annualemissions FROM approved_companies " \
+            "WHERE annualemissions IS NOT NULL"
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    res = []
+    for entry in data:
+        res.append([entry[0], entry[1]])
+    return res
+
 
 def getSupportedActivities(connection):
     query = "SELECT * FROM approved_activities"
@@ -173,7 +191,7 @@ def getSupportedActivities(connection):
 
 
 def getSupportedCompanies(connection):
-    query = "SELECT name FROM approved_companies"
+    query = "SELECT companyname FROM approved_companies"
     cursor = connection.cursor()
     cursor.execute(query)
     data = cursor.fetchall()
