@@ -263,7 +263,7 @@ def viewHistoricalAggregateFootprint(user_id):
 
 @app.route("/viewAggregateFootprint", methods=["GET"])
 @token_required
-def viewAggregateFootprint():
+def viewAggregateFootprint(user_id):
     all_data, grouped_data = database_utils.getAllActivities(conn)
     total = database_utils.getTotalEmissions(conn)
     total_user = database_utils.getTotalEmissions(conn, user_id)
@@ -273,7 +273,7 @@ def viewAggregateFootprint():
             {
                 "message": "aggregate footprint",
                 "total_emissions": total,
-                # "total_user_emissions": total_user,
+                "total_user_emissions": total_user,
                 "annual_company_emissions": annual_company
             }
         ),
