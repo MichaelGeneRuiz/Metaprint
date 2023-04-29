@@ -118,34 +118,38 @@ function ViewActivities(props) {
 
   return (
     <Container className={classes.container}>
-      <h1 className={classes.text}>View Activities</h1>
-      <h4 className={classes.text}>
+      <h1 className={`${classes.info_text} ${classes.header}`}>
+        View Activities
+      </h1>
+      <h5 className={classes.info_text}>
         Current Range: {startDate} - {endDate}
-      </h4>
-      <h5 className={classes.text}>All dates are in UTC.</h5>
+      </h5>
+      <h6 className={classes.info_text}>All dates/times are in UTC.</h6>
       {sortedActivities.length > 0 && (
-        <Table responsive className={classes.table}>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Activity</th>
-              <th>Company</th>
-              <th>Emissions</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedActivities.map((a) => (
-              <tr key={a.activity_id}>
-                <td>{new Date(a.date).toUTCString().slice(0, -13)}</td>
-                <td>{a.type}</td>
-                <td>{a.company ? a.company : "N/A"}</td>
-                <td>{a.emissions} kg</td>
-                <td>{a.amount}</td>
+        <div className={classes.table}>
+          <Table responsive>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Activity</th>
+                <th>Company</th>
+                <th>Emissions</th>
+                <th>Amount</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {sortedActivities.map((a) => (
+                <tr key={a.activity_id}>
+                  <td>{new Date(a.date).toUTCString().slice(0, -13)}</td>
+                  <td>{a.type}</td>
+                  <td>{a.company ? a.company : "N/A"}</td>
+                  <td>{a.emissions} kg</td>
+                  <td>{a.amount}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
       )}
       {sortedActivities.length <= 0 && (
         <div className={classes.text}>
@@ -153,17 +157,17 @@ function ViewActivities(props) {
         </div>
       )}
       <Row className={classes.button_row}>
-        <Col>
+        <Col className={classes.button_column}>
           <Button className={classes.button} onClick={props.refresh}>
             Refresh
           </Button>
         </Col>
-        <Col>
+        <Col className={classes.button_column}>
           <Button className={classes.button} onClick={showPastWeekActivities}>
             Past Week
           </Button>
         </Col>
-        <Col>
+        <Col className={classes.button_column}>
           <Button className={classes.button} onClick={showTodayActivities}>
             Today
           </Button>
@@ -176,7 +180,7 @@ function ViewActivities(props) {
             showRangeActivities();
           }}
         >
-          <Stack direction="horizontal" gap={3}>
+          <Stack className={classes.stack} gap={3}>
             <Form.Group className="mb-3" controlId="formBasicFromDate">
               <Form.Control
                 type="date"
@@ -193,7 +197,7 @@ function ViewActivities(props) {
                 value={formEndDate}
               />
             </Form.Group>
-            <Button className="mb-3" type="submit">
+            <Button className={`${classes.button} mb-3`} type="submit">
               Submit
             </Button>
           </Stack>

@@ -110,9 +110,9 @@ function InputActivity(props) {
   }
 
   return (
-    <Container>
+    <Container className={classes.container}>
+      <h1 className={classes.header}>Input Activities</h1>
       <Form onSubmit={submitHandler} className={classes.form}>
-        <h1 className={classes.header}>Input Activity</h1>
         {!!errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
         {!!successMessage && <Alert variant="success">{successMessage}</Alert>}
         <Form.Group className="mb-3" controlId="formBasicTimestamp">
@@ -211,19 +211,24 @@ function InputActivity(props) {
             value={amount}
           />
         </Form.Group>
-        <Row>
-          <Col>
-            <Button onClick={togglePresetMode}>
+        <Row className={classes.button_row}>
+          <Col className={classes.button_col}>
+            <Button onClick={togglePresetMode} className={classes.button}>
               {presetMode ? "Manual Activity Input" : "Preset Activities"}
             </Button>
           </Col>
-          <Col>
-            <Button onClick={togglePresetCompanyMode}>
+          <Col className={classes.button_col}>
+            <Button
+              onClick={togglePresetCompanyMode}
+              className={classes.button}
+            >
               {presetCompanyMode ? "Manual Company Input" : "Preset Companies"}
             </Button>
           </Col>
-          <Col>
-            <Button type="submit">Submit</Button>
+          <Col className={classes.button_col}>
+            <Button type="submit" className={classes.button}>
+              Submit
+            </Button>
           </Col>
         </Row>
       </Form>

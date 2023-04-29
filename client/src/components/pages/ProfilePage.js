@@ -1,8 +1,6 @@
 import { useEffect, useContext, useCallback, useState } from "react";
 
 import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 
 import AuthContext from "../../context/AuthContext";
 
@@ -70,30 +68,20 @@ function ProfilePage() {
   }, [getPersonalActivities, getPresets]);
 
   return (
-    <Container>
-      <div style={{ textAlign: "center" }}>
-        <div style={{ fontSize: 24 }}>
-          You are currently logged in as: {authCtx.email}
-        </div>
-      </div>
+    <Container className={classes.container}>
+      <h1 className={classes.header}>Welcome to Metaprint!</h1>
       <hr />
       <ViewActivities
         activities={personalActivities}
         setTipActivities={setTipActivities}
         refresh={getPersonalActivities}
       />
+      <InputActivity
+        activities_dict={presetActivities}
+        preset_companies={presetCompanies}
+      />
       <hr />
-      <Row className={classes.profile_row}>
-        <Col>
-          <InputActivity
-            activities_dict={presetActivities}
-            preset_companies={presetCompanies}
-          />
-        </Col>
-        <Col className={classes.profile_column}>
-          <ViewTips tipActivities={tipActivities} presets={presetActivities} />
-        </Col>
-      </Row>
+      <ViewTips tipActivities={tipActivities} presets={presetActivities} />
     </Container>
   );
 }

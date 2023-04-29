@@ -1,29 +1,23 @@
 import { useEffect, useContext, useCallback, useState } from "react";
 
 import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
-import TotalEmissions from "../aggregate/TotalEmissions";
+import UserEmissions from "../aggregate/UserEmissions";
+import CompanyEmissions from "../aggregate/CompanyEmissions";
+import HistoricalEmissions from "../aggregate/HistoricalEmissions";
+import DailyEmissions from "../aggregate/DailyEmissions";
 
 import AuthContext from "../../context/AuthContext";
-import HistoricalEmissions from "../aggregate/HistoricalEmissions";
+
+import classes from "./AggregatePage.module.css";
 
 function AggregatePage() {
   const authCtx = useContext(AuthContext);
   const [totalEmissions, setTotalEmissions] = useState(0);
   const [userEmissions, setUserEmissions] = useState(0);
   const [companyEmissions, setCompanyEmissions] = useState([]);
-  const [numUsers, setNumUsers] = useState(0);
-
-  const getNumUsers = useCallback(async () => {
-    const res = await fetch("/home");
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.log("uh oh");
-    }
-
-    setNumUsers(data.users);
-  }, []);
 
   const getEmissions = useCallback(async () => {
     try {
@@ -51,20 +45,32 @@ function AggregatePage() {
 
   useEffect(() => {
     getEmissions();
-    getNumUsers();
-  }, [getEmissions, getNumUsers]);
+  }, [getEmissions]);
 
   return (
-    <Container style={{ textAlign: "center" }}>
-      <TotalEmissions
-        userEmissions={userEmissions}
-        totalEmissions={totalEmissions}
-        companyEmissions={companyEmissions}
-      />
+    <Container className={classes.container}>
+      <h1 className={classes.header}>Welcome to Metaprint!</h1>
       <hr />
-      <HistoricalEmissions />
+      <Row className={classes.row}>
+        <Col className={classes.col}>
+          <UserEmissions
+            userEmissions={userEmissions}
+            totalEmissions={totalEmissions}
+          />
+        </Col>
+        <Col className={classes.col}>
+          <CompanyEmissions companyEmissions={companyEmissions} />
+        </Col>
+      </Row>
       <hr />
-      <div>There are {numUsers} users in the database.</div>
+      <Row>
+        <Col className={classes.col}>
+          <DailyEmissions />
+        </Col>
+        <Col className={classes.col}>
+          <HistoricalEmissions />
+        </Col>
+      </Row>
     </Container>
   );
 }

@@ -39,22 +39,33 @@ function ViewTips(props) {
   }, [presets, tipActivities]);
 
   if (!presets.tips || !presets.activities || !tipActivities) {
-    return <Spinner />;
+    return (
+      <div style={{ textAlign: "center" }}>
+        <Spinner />
+      </div>
+    );
   }
 
   return (
-    <Container>
+    <Container className={classes.container}>
       <h1 className={classes.header}>Tips and Tricks</h1>
-      <ul>
-        {Object.keys(shownTips).length > 0 &&
-          Object.keys(shownTips).map((id) => (
+      {Object.keys(shownTips).length > 0 && (
+        <ul className={classes.list}>
+          {Object.keys(shownTips).map((id) => (
             <li key={id}>
               We see that you have the following activity on your list:{" "}
               <u>{presets.activities[id]}</u>
               <br /> Here's a tip for you: <strong>{shownTips[id]}</strong>
             </li>
           ))}
-      </ul>
+        </ul>
+      )}
+      {Object.keys(shownTips).length === 0 && (
+        <div className={classes.text}>
+          There are no applicable tips at the moment. Please change the activity
+          range or add some new activities!
+        </div>
+      )}
     </Container>
   );
 }
