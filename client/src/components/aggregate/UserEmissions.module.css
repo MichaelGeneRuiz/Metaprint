@@ -15,20 +15,6 @@
   margin-bottom: 2rem;
 }
 
-.text {
-  font-size: 14px;
-}
-
-.form {
-  font-size: 14px;
-}
-
-.button {
-  background-color: #aa5656 !important;
-  border-color: #aa5656 !important;
-}
-
-.button:hover {
-  background-color: #b99b6b !important;
-  border-color: #b99b6b !important;
+.subheader {
+  font-size: 24px;
 }

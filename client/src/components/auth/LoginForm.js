@@ -103,11 +103,13 @@ function LoginForm() {
   }
 
   return (
-    <Container>
+    <Container className={classes.container}>
+      <h1 className={classes.header}>Welcome to Metaprint!</h1>
+      <hr />
       <Form onSubmit={submitHandler} className={classes.form}>
         {!!errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
         {!!registrationNotice && <Alert>{registrationNotice}</Alert>}
-        <h1 className={classes.header}>{isLogin ? "Login" : "Sign up"}</h1>
+        <h1 className={classes.form_header}>{isLogin ? "Login" : "Sign Up"}</h1>
         {!isLogin && (
           <Form.Group className="mb-3" controlId="formBasicFirstName">
             <Form.Label>First Name</Form.Label>
@@ -146,7 +148,7 @@ function LoginForm() {
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
-            placeholder="Password"
+            placeholder="Enter password"
             required
             onChange={(e) => setPassword(e.target.value)}
             value={password}
@@ -157,10 +159,18 @@ function LoginForm() {
             </Form.Text>
           )}
         </Form.Group>
-        <Button type="button" onClick={switchAuthModeHandler}>
+        <Button
+          type="button"
+          onClick={switchAuthModeHandler}
+          className={classes.button}
+        >
           {isLogin ? "Create New Account" : "Login With Existing Account"}
         </Button>
-        <Button style={{ float: "right" }} className="ms-auto" type="submit">
+        <Button
+          style={{ float: "right" }}
+          className={`${classes.button} ms-auto`}
+          type="submit"
+        >
           Submit
         </Button>
       </Form>

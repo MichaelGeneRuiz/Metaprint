@@ -6,6 +6,9 @@ import App from "./App";
 import { AuthProvider } from "./context/AuthContext";
 import reportWebVitals from "./reportWebVitals";
 
+import "./index.css";
+import "./fonts/futura_medium.ttf";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
