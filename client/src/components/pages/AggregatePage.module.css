@@ -10,16 +10,16 @@
   margin-top: 0;
 }
 
-.profile_row {
+.row {
   flex-direction: row;
 }
 
-@media only screen and (max-width: 768px) {
-  .profile_row {
-    flex-direction: column;
-  }
+.col {
+  margin-bottom: 1rem;
+}
 
-  .profile_column {
-    margin-top: 1rem;
+@media only screen and (max-width: 768px) {
+  .row {
+    flex-direction: column;
   }
 }

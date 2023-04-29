@@ -1,14 +1,19 @@
 import Container from "react-bootstrap/Container";
 
 import TitleBlock from "../home/TitleBlock";
-import HomeContent from "../home/HomeContent";
+import AboutContent from "../home/AboutContent";
+import FeatureContent from "../home/FeatureContent";
+import HeroContent from "../home/HeroContent";
 
 function Homepage() {
   return (
-    <Container style={{ textAlign: "center" }}>
+    <Container style={{ maxWidth: "800px", padding: "32px" }}>
       <TitleBlock />
-      <hr/>
-      <HomeContent />
+      <hr />
+      <AboutContent />
+      <hr />
+      <FeatureContent />
+      <HeroContent/>
     </Container>
   );
 }
