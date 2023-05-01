@@ -96,8 +96,6 @@ def getAggregateEmissionsHistorical(connection, preset_type):
     data = cursor.fetchall()
     cursor.close()
 
-    print(data)
-
     res = {}
     for entry in data:
         date = str(entry[6])
