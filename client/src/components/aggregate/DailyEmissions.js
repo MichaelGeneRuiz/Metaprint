@@ -71,7 +71,7 @@ function DailyEmissions(props) {
             className={classes.button}
             onClick={() => getHistoricalPresetData(true, "day")}
           >
-            Today
+            Past Day
           </Button>
         </Col>
         <Col>
