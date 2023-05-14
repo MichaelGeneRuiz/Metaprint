@@ -1,0 +1,5 @@
+DB_NAME = "Metaprint"
+DB_USER = "user"
+DB_PASSWORD = "user"
+DB_HOST = "metaprint-01.c7ifo7yeszdy.us-east-2.rds.amazonaws.com"
+DB_PORT = "5432"
