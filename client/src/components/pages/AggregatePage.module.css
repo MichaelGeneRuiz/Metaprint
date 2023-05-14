@@ -1,0 +1,25 @@
+.container {
+  max-width: 800px;
+  padding: 32px;
+}
+
+.header {
+  font-size: 32px;
+  color: #698269;
+  text-align: center;
+  margin-top: 0;
+}
+
+.row {
+  flex-direction: row;
+}
+
+.col {
+  margin-bottom: 1rem;
+}
+
+@media only screen and (max-width: 768px) {
+  .row {
+    flex-direction: column;
+  }
+}

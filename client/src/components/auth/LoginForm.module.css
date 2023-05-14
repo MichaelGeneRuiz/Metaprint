@@ -1,0 +1,31 @@
+.container {
+  max-width: 800px;
+}
+
+.form {
+  margin: auto;
+  max-width: 400px;
+}
+
+.header {
+  font-size: 32px;
+  color: #698269;
+  text-align: center;
+  margin-top: 0;
+  padding: 32px;
+}
+
+.form_header {
+  text-align: center;
+  color: #aa5656;
+}
+
+.button {
+  background-color: #aa5656 !important;
+  border-color: #aa5656 !important;
+}
+
+.button:hover {
+  background-color: #b99b6b !important;
+  border-color: #b99b6b !important;
+}

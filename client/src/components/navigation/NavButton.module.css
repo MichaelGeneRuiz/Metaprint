@@ -1,0 +1,17 @@
+.button {
+  cursor: pointer;
+  border: none;
+  color: white;
+  padding: 7.5px 7.5px;
+  justify-content: space-around;
+  align-items: center;
+  font-weight: bold;
+  background-color: #698269;;
+  flex-basis: calc(10% - 5px);
+}
+
+.button:hover {
+  background-color: white;
+  color: black;
+  transition: all 0.4s;
+}
